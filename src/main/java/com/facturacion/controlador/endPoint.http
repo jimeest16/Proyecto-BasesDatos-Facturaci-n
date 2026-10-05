@@ -1,0 +1,12 @@
+
+@baseUrl = http://localhost:8084/facturacion
+
+
+GET {{baseUrl}}/clientes
+Accept: application/json
+Content-Type: application/json
+
+
+GET {{baseUrl}}/clientes/1
+Accept: application/json
+Content-Type: application/json
