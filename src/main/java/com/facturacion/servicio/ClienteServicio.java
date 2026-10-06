@@ -72,7 +72,7 @@ public class ClienteServicio {
         String clienteDesProfesion = request.getDesProfesion();
         String clienteDesActividadEconomica = request.getDesActividadEconomica();
 
-        // Crear el objeto Entidad
+        //  el objeto Entidad
         Cliente cliente = new Cliente();
         cliente.setNomCliente(clienteNom);
         cliente.setTipIdentificacion(clienteTipIdentificacion);
@@ -85,18 +85,19 @@ public class ClienteServicio {
         cliente.setDesBarrio(clienteDesBarrio);
         cliente.setDesProfesion(clienteDesProfesion);
         cliente.setDesActividadEconomica(clienteDesActividadEconomica);
-        cliente.setIndEstado("A"); // Estado activo por defecto
+        cliente.setIndEstado("A"); /
 
-        // guarda en SQL Server y capturar la entidad guardada 
+      
         Cliente clienteGuardado = clienteRepo.save(cliente);
 
-        //Retornar el DTO Response usando el método de mapeo
+     
         return convertirClienteADTO(clienteGuardado);
     }
 
     private clienteDTOResponse convertirClienteADTO(Cliente cliente) {
-        // Convertir los campos byte[] de la entidad de vuelta a String para el DTO Response
+        // es necesarios que los campos byte de la entidad de vuelta a String para el DTO Response
         String numIdentificacionStr = cliente.getNumIdentificacion() != null ? new String(cliente.getNumIdentificacion()) : null;
+        //es ternaria porque si no es nullo, entonces se convierte a String, si es nulo, entonces se asigna null
 
         String numTelefonoStr = cliente.getNumTelefono() != null ? new String(cliente.getNumTelefono()) : null;
         
