@@ -1,12 +1,31 @@
 
 @baseUrl = http://localhost:8084/facturacion
 
+POST {{baseUrl}}/clientes
+Accept: application/json
+Content-Type: application/json
+
+{
+  "nomCliente": "Empresa Ejemplo S.A.",
+  "tipIdentificacion": "PJ",
+  "numIdentificacion": "3101123456",
+  "numTelefono": "88889999",
+  "desCorreo": "contacto@ejemplo.com",
+  "desProvincia": "Cartago",
+  "desCanton": "Cartago",
+  "desDistrito": "Oriental",
+  "desBarrio": "El Carmen",
+  "desProfesion": "Comercio",
+  "desActividadEconomica": "Servicios de Software"
+}
+
+###
+
 
 GET {{baseUrl}}/clientes
-Accept: application/json
-Content-Type: application/json
 
+###
 
+### 3. Probar buscar cliente por Código / ID (GET)
 GET {{baseUrl}}/clientes/1
-Accept: application/json
-Content-Type: application/json
+

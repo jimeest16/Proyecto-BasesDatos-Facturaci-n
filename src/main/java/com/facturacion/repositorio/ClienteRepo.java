@@ -2,6 +2,8 @@ package com.facturacion.repositorio;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.facturacion.dto.response.clienteDTOResponse;
 import com.facturacion.entidades.Cliente;
 
 

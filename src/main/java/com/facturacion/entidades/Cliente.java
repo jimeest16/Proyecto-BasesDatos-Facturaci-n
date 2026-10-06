@@ -26,15 +26,15 @@ public class Cliente {
 
     // Se mapean como byte[] porque en la BD son VARBINARY por el cifrado
     // cumple con el cell level encryption
-    @Column(name = "num_identificacion", nullable = false)
+
+    @Column(name = "num_identificacion", nullable = false, columnDefinition = "VARBINARY(MAX)")
     private byte[] numIdentificacion;
 
-    @Column(name = "num_telefono", nullable = false)
+    @Column(name = "num_telefono", nullable = false, columnDefinition = "VARBINARY(MAX)")
     private byte[] numTelefono;
 
-    @Column(name = "des_correo", nullable = false)
+    @Column(name = "des_correo", nullable = false, columnDefinition = "VARBINARY(MAX)")
     private byte[] desCorreo;
-
     @Column(name = "des_provincia", nullable = false, length = 50)
     private String desProvincia;
 
@@ -44,7 +44,7 @@ public class Cliente {
     @Column(name = "des_distrito", nullable = false, length = 50)
     private String desDistrito;
 
-    @Column(name = "des_barrio", length = 50) 
+    @Column(name = "des_barrio", length = 50)
     private String desBarrio;
 
     @Column(name = "des_profesion", nullable = false, length = 100)
@@ -59,12 +59,13 @@ public class Cliente {
     @Column(name = "ind_estado", nullable = false, length = 1)
     private String indEstado = "A";
 
-    //IMPORTANTE LOS CONTRUCTORES, GETTERS Y SETTERS PARA QUE FUNCIONE EL JPA
+    // IMPORTANTE LOS CONTRUCTORES, GETTERS Y SETTERS PARA QUE FUNCIONE EL JPA
     public Cliente() {
     }
 
-    public Cliente(Integer codCliente, String nomCliente, String tipIdentificacion, byte[] numIdentificacion, byte[] numTelefono, byte[] desCorreo, String desProvincia, String desCanton, String desDistrito, String desBarrio, String desProfesion, String desActividadEconomica, LocalDateTime fecRegistro, String indEstado) {
-        this.codCliente = codCliente;
+    public Cliente(String nomCliente, String tipIdentificacion, byte[] numIdentificacion, byte[] numTelefono,
+            byte[] desCorreo, String desProvincia, String desCanton, String desDistrito, String desBarrio,
+            String desProfesion, String desActividadEconomica, LocalDateTime fecRegistro, String indEstado) {
         this.nomCliente = nomCliente;
         this.tipIdentificacion = tipIdentificacion;
         this.numIdentificacion = numIdentificacion;
@@ -192,5 +193,4 @@ public class Cliente {
         this.indEstado = indEstado;
     }
 
-    
 }
