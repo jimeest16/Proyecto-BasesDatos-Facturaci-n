@@ -12,7 +12,7 @@ public class NotaCreditoDebito {
     @Column(name = "cod_nota")
     private Integer codNota;
 
-    @Column(name = "fec_nota", insertable = false, updatable = false)
+    @Column(name = "fec_nota", nullable = false, insertable = false, updatable = false)
     private LocalDateTime fecNota;
 
     @ManyToOne(fetch = FetchType.LAZY)

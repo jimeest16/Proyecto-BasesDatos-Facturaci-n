@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.facturacion.dto.NotaCreditoDebitoDTO;
 import com.facturacion.entidades.NotaCreditoDebito;
-import com.facturacion.repositorio.FacturaRepo;
 import com.facturacion.repositorio.NotaCreditoDebitoRepo;
 
 @Service
@@ -16,31 +15,23 @@ import com.facturacion.repositorio.NotaCreditoDebitoRepo;
 public class NotaServicio {
 
     private final NotaCreditoDebitoRepo repo;
-    private final FacturaRepo facturaRepo;
 
-    public NotaServicio(NotaCreditoDebitoRepo repo, FacturaRepo facturaRepo) {
+    public NotaServicio(NotaCreditoDebitoRepo repo) {
         this.repo = repo;
-        this.facturaRepo = facturaRepo;
     }
 
     @Transactional(readOnly = true)
     public List<NotaCreditoDebitoDTO> findAll() {
-        return repo.findAll()
-                .stream()
-                .map(this::convertirADTO)
-                .collect(Collectors.toList());
+        return repo.findAll().stream().map(this::convertirADTO).collect(Collectors.toList());
     }
 
-  
     public NotaCreditoDebitoDTO save(NotaCreditoDebitoDTO dto) {
-        // Invoca el procedimiento almacenado mapeado en el repositorio
         Integer codNotaGenerado = repo.spInsertarNota(
             dto.getNumFactura(),
             dto.getIndTipo(),
             dto.getDesMotivo()
         );
 
-      
         if (codNotaGenerado != null && codNotaGenerado > 0) {
             NotaCreditoDebito notaGuardada = repo.findById(codNotaGenerado).orElse(null);
             if (notaGuardada != null) {
@@ -48,16 +39,16 @@ public class NotaServicio {
             }
         }
 
-       
+        dto.setCodNota(codNotaGenerado);
         return dto;
     }
 
     private NotaCreditoDebitoDTO convertirADTO(NotaCreditoDebito n) {
         return new NotaCreditoDebitoDTO(
-            n.getCodNota(), 
+            n.getCodNota(),
             n.getFecNota(),
             n.getFactura() != null ? n.getFactura().getNumFactura() : null,
-            n.getIndTipo(), 
+            n.getIndTipo(),
             n.getDesMotivo()
         );
     }

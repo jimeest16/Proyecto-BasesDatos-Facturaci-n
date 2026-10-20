@@ -4,9 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de sesión - Facturación</title>
+    <title>Inicio de sesión - Facturación Propi</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --bg-canvas: #f4f3f0;
+            --panel-bg: #fcfbf9;
+            --text-heading: #2d2b2a;
+            --text-body: #57534e;
+            --accent-terracotta: #dd6b53;
+            --accent-sage: #5b8a72;
+            --accent-lavender: #8b78a5;
+            --border-soft: #d6d1c4;
+            --card-shadow: 0 12px 32px rgba(45, 43, 42, 0.06);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -14,158 +30,140 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #0b0f19;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--text-body);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
-            position: relative;
+            padding: 20px;
         }
 
-   
-        .glow-1 {
-            position: absolute;
-            width: 320px;
-            height: 320px;
-            background: #6366f1;
-            filter: blur(120px);
-            border-radius: 50%;
-            top: 15%;
-            left: 20%;
-            opacity: 0.5;
-        }
-
-        .glow-2 {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: #06b6d4;
-            filter: blur(120px);
-            border-radius: 50%;
-            bottom: 15%;
-            right: 20%;
-            opacity: 0.5;
-        }
-
-     
         .contenedor {
-            position: relative;
-            z-index: 10;
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
             padding: 40px 35px;
-            background: rgba(18, 24, 38, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 28px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            background: var(--panel-bg);
+            border: 1.5px solid var(--border-soft);
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
         }
 
         .header-login {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 28px;
+        }
+
+        .brand-badge {
+            width: 12px;
+            height: 12px;
+            background: var(--accent-terracotta);
+            border-radius: 50%;
+            display: inline-block;
+            margin-bottom: 8px;
         }
 
         .header-login h1 {
-            color: #ffffff;
-            font-size: 1.6rem;
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-heading);
+            font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: -0.5px;
         }
 
         .header-login p {
-            color: #94a3b8;
-            font-size: 0.85rem;
+            color: var(--text-body);
+            font-size: 0.88rem;
             margin-top: 6px;
         }
 
         .campo {
             margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
 
         label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #cbd5e1;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-heading);
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.6px;
         }
 
         input {
             width: 100%;
-            padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 50px;
+            padding: 12px 16px;
+            background: #f5f4f0;
+            border: 1.5px solid var(--border-soft);
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
             font-size: 0.95rem;
-            color: #ffffff;
+            color: var(--text-heading);
             outline: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         input::placeholder {
-            color: #64748b;
+            color: #a8a29e;
         }
 
         input:focus {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: #38bdf8;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+            background: #ffffff;
+            border-color: var(--accent-lavender);
+            box-shadow: 0 0 0 4px rgba(139, 120, 165, 0.12);
         }
 
         button {
             width: 100%;
-            padding: 15px;
+            padding: 14px;
             margin-top: 10px;
-            background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
-            color: #ffffff;
+            background: var(--text-heading);
+            color: #fcfbf9;
+            font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.95rem;
             border: none;
-            border-radius: 50px;
+            border-radius: 14px;
             cursor: pointer;
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 30px rgba(6, 182, 212, 0.45);
+        button:hover:not(:disabled) {
+            background: var(--accent-sage);
+            box-shadow: 0 4px 14px rgba(91, 138, 114, 0.25);
+            transform: translateY(-1px);
         }
 
-        button:active {
+        button:active:not(:disabled) {
             transform: translateY(0);
         }
 
         button:disabled {
-            background: #334155;
-            box-shadow: none;
+            background: var(--border-soft);
+            color: #a8a29e;
             cursor: wait;
         }
 
         #mensaje {
             text-align: center;
             margin-top: 20px;
-            font-size: 0.85rem;
-            color: #38bdf8;
-            font-weight: 500;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.88rem;
+            color: var(--accent-terracotta);
+            font-weight: 700;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="glow-1"></div>
-    <div class="glow-2"></div>
-
     <div class="contenedor">
         <div class="header-login">
-            <h1>Facturación</h1>
+            <span class="brand-badge"></span>
+            <h1>Propi Facturación</h1>
             <p>Ingresa tus credenciales de acceso</p>
         </div>
 
@@ -196,6 +194,7 @@
         formulario.addEventListener("submit", async function (evento) {
             evento.preventDefault();
 
+            mensaje.style.color = "var(--accent-lavender)";
             mensaje.textContent = "Validando credenciales...";
             botonLogin.disabled = true;
 
@@ -220,6 +219,7 @@
                 const datos = await respuesta.json();
 
                 if (!respuesta.ok || !datos.autenticado) {
+                    mensaje.style.color = "var(--accent-terracotta)";
                     mensaje.textContent =
                         datos.mensaje || "Usuario o contraseña incorrectos.";
                     return;
@@ -227,14 +227,13 @@
 
                 if (datos.rol === "Rol_Digitador") {
                     window.location.href = "/facturacion/digitador.html";
-
                 } else if (datos.rol === "Rol_Consulta") {
                     window.location.href = "/facturacion/consulta.html";
-
                 } else if (datos.rol === "Rol_Admin") {
                     window.location.href = "/facturacion/admin.html";
                 }
             } catch (error) {
+                mensaje.style.color = "var(--accent-terracotta)";
                 mensaje.textContent =
                     "No se pudo conectar con el servidor.";
             } finally {

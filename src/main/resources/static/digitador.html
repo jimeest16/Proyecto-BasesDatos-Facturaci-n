@@ -4,8 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel del Digitador - Sistema de Facturación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --bg-canvas: #f4f3f0;
+            --panel-bg: #fcfbf9;
+            --sidebar-bg: #eae8e1;
+            --text-heading: #2d2b2a;
+            --text-body: #57534e;
+            --accent-terracotta: #dd6b53;
+            --accent-sage: #5b8a72;
+            --accent-lavender: #8b78a5;
+            --accent-sand: #e3dec3;
+            --border-soft: #d6d1c4;
+            --card-shadow: 0 8px 24px rgba(45, 43, 42, 0.04);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -13,148 +30,162 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #0b0f19;
-            color: #f8fafc;
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--text-body);
             min-height: 100vh;
-            padding: 40px 20px;
             display: flex;
-            justify-content: center;
-        }
-
-        .wrapper {
-            width: 100%;
-            max-width: 1050px;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            justify-content: center;
+            padding: 12px;
         }
 
-        header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .btn-salir {
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            color: #94a3b8;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 0.88rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-salir:hover {
-            background: #ef4444;
-            color: #ffffff;
-            border-color: #ef4444;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
-        }
-
-        .opciones {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .tarjeta {
-            background: rgba(18, 24, 38, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        /* VISTA ALEJADA / ESCALADA PARA MAYOR VISIBILIDAD */
+        .app-container {
+            display: flex;
+            width: 100%;
+            max-width: 1380px;
+            height: 88vh;
+            margin: 0 auto;
+            background: var(--panel-bg);
+            border: 1.5px solid var(--border-soft);
             border-radius: 20px;
-            padding: 20px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        /* BARRA LATERAL COMPACTA */
+        aside.sidebar {
+            width: 240px;
+            background: var(--sidebar-bg);
+            padding: 20px 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            border-right: 1.5px solid var(--border-soft);
+            flex-shrink: 0;
         }
 
-        .tarjeta h3 {
-            font-size: 1.1rem;
-            color: #ffffff;
-            margin-bottom: 8px;
+        .brand-box {
+            padding-bottom: 16px;
+            border-bottom: 1.5px stroke var(--border-soft);
         }
 
-        .tarjeta p {
-            color: #94a3b8;
-            font-size: 0.82rem;
-            line-height: 1.4;
-            margin-bottom: 15px;
+        .brand-box h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-accion {
-            padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.08);
-            color: #38bdf8;
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 50px;
+        .brand-badge {
+            width: 10px;
+            height: 10px;
+            background: var(--accent-terracotta);
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            background: transparent;
+            color: var(--text-heading);
+            border: 1.5px solid transparent;
+            border-radius: 12px;
+            font-family: 'Space Grotesk', sans-serif;
             font-weight: 600;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
+            text-align: left;
+            transition: all 0.2s ease;
         }
 
-        .btn-accion:hover {
-            background: #38bdf8;
-            color: #0b0f19;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
         }
 
-        .modal-contenedor {
-            display: none;
-            background: rgba(18, 24, 38, 0.95);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 24px;
-            padding: 30px;
-            margin-top: 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        .nav-item.active {
+            background: #ffffff;
+            border-color: var(--border-soft);
+            color: var(--accent-terracotta);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .modal-header h2 {
-            font-size: 1.3rem;
-            color: #38bdf8;
-        }
-
-        .btn-cerrar-modal {
-            background: transparent;
-            border: none;
-            color: #94a3b8;
-            font-size: 1.5rem;
+        .btn-salir {
+            padding: 10px;
+            background: #f5e6e3;
+            color: var(--accent-terracotta);
+            border: 1px solid #ebc6be;
+            border-radius: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
             cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
         }
 
+        .btn-salir:hover {
+            background: var(--accent-terracotta);
+            color: #ffffff;
+        }
+
+        /* ZONA DE CONTENIDO Y MODULOS */
+        main.main-content {
+            flex-grow: 1;
+            padding: 24px 30px;
+            background: var(--panel-bg);
+            overflow-y: auto;
+        }
+
+        .panel-contenedor {
+            display: none;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-header {
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1.5px dashed var(--border-soft);
+        }
+
+        .panel-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-heading);
+        }
+
+        /* FORMULARIOS Y CAMPOS DE ENTRADA COMPACTOS */
         .grid-form {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 12px 18px;
         }
 
         .campo {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
 
         .campo.full {
@@ -162,104 +193,163 @@
         }
 
         label {
-            font-size: 0.8rem;
-            color: #cbd5e1;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-heading);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         input, select, textarea {
-            padding: 10px 14px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 8px 12px;
+            background: #f5f4f0;
+            border: 1.5px solid var(--border-soft);
             border-radius: 10px;
-            color: #ffffff;
-            font-size: 0.9rem;
+            color: var(--text-heading);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem;
             outline: none;
+            transition: all 0.2s ease;
         }
 
         input:focus, select:focus, textarea:focus {
-            border-color: #38bdf8;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
-        }
-
-        select option {
-            background: #121826;
-            color: #ffffff;
+            background: #ffffff;
+            border-color: var(--accent-lavender);
+            box-shadow: 0 0 0 3px rgba(139, 120, 165, 0.12);
         }
 
         .btn-guardar {
             grid-column: span 2;
-            padding: 12px;
-            margin-top: 15px;
-            background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
-            color: #ffffff;
+            padding: 11px;
+            margin-top: 8px;
+            background: var(--text-heading);
+            color: #fcfbf9;
+            font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
+            font-size: 0.88rem;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        .btn-eliminar-tabla {
-            padding: 4px 10px;
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.75rem;
+        .btn-guardar:hover {
+            background: var(--accent-sage);
+            box-shadow: 0 4px 14px rgba(91, 138, 114, 0.2);
         }
 
-        .btn-eliminar-tabla:hover {
-            background: #ef4444;
-            color: #ffffff;
-        }
-
+        /* TABLA Y PÁGINA DE NAVEGACIÓN DE CLIENTES */
         .barra-busqueda {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .tabla-resultados {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 0.88rem;
+            border-collapse: separate;
+            border-spacing: 0 6px;
+            font-size: 0.82rem;
         }
 
         .tabla-resultados th {
-            background: rgba(56, 189, 248, 0.15);
-            color: #38bdf8;
-            padding: 12px;
+            padding: 8px 12px;
+            color: var(--text-heading);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
             text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1.5px solid var(--border-soft);
         }
 
         .tabla-resultados td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            color: #cbd5e1;
+            padding: 10px 12px;
+            background: #f7f6f2;
+            color: var(--text-body);
+        }
+
+        .tabla-resultados tbody tr td:first-child {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+            font-weight: 600;
+        }
+
+        .tabla-resultados tbody tr td:last-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .btn-eliminar-tabla {
+            padding: 4px 10px;
+            background: #fbebe8;
+            color: var(--accent-terracotta);
+            border: 1px solid #f3c2b8;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.72rem;
+        }
+
+        .btn-eliminar-tabla:hover {
+            background: var(--accent-terracotta);
+            color: #ffffff;
+        }
+
+        /* BARRA DE PAGINACIÓN */
+        .paginacion-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1.5px solid var(--border-soft);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.82rem;
+            color: var(--text-heading);
+        }
+
+        .btn-pagina {
+            padding: 6px 14px;
+            background: #eae8e1;
+            color: var(--text-heading);
+            border: 1.5px solid var(--border-soft);
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-pagina:hover:not(:disabled) {
+            background: var(--accent-sage);
+            color: #ffffff;
+            border-color: var(--accent-sage);
+        }
+
+        .btn-pagina:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .mensaje-estado {
-            margin-top: 15px;
+            margin-top: 12px;
             text-align: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
             font-size: 0.85rem;
-            color: #38bdf8;
+            color: var(--accent-lavender);
         }
 
-        @media (max-width: 850px) {
-            .opciones {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 550px) {
-            .opciones, .grid-form, .barra-busqueda {
-                grid-template-columns: 1fr;
+        @media (max-width: 900px) {
+            .app-container {
                 flex-direction: column;
+                height: auto;
+            }
+            aside.sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1.5px solid var(--border-soft);
+            }
+            .grid-form {
+                grid-template-columns: 1fr;
             }
             .campo.full, .btn-guardar {
                 grid-column: span 1;
@@ -270,55 +360,40 @@
 
 <body>
 
-    <div class="wrapper">
-        <header>
-            <h1>Portal Facturación - Propi</h1>
-            <button class="btn-salir" id="btnCerrarSesion">Cerrar sesión</button>
-        </header>
-
-        <main>
-            <div class="opciones">
-                <div class="tarjeta">
-                    <div>
-                        <h3>Consultas</h3>
-                        <p>Buscar clientes por ID o por Nombre.</p>
-                    </div>
-                    <button class="btn-accion" onclick="abrirModulo('busqueda')">Buscar Clientes</button>
+    <div class="app-container">
+        <!-- BARRA LATERAL NAVEGABLE -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand-box">
+                    <h1><span class="brand-badge"></span> Propi Facturación</h1>
                 </div>
-
-                <div class="tarjeta">
-                    <div>
-                        <h3>Clientes</h3>
-                        <p>Registro de datos de clientes con cifrado columnar.</p>
-                    </div>
-                    <button class="btn-accion" onclick="abrirModulo('cliente')">Gestionar Clientes</button>
-                </div>
-
-                <div class="tarjeta">
-                    <div>
-                        <h3>Facturas</h3>
-                        <p>Emisión y registro de facturas con código CABYS.</p>
-                    </div>
-                    <button class="btn-accion" onclick="abrirModulo('factura')">Nueva Factura</button>
-                </div>
-
-                <div class="tarjeta">
-                    <div>
-                        <h3>Notas</h3>
-                        <p>Aplicación de notas de crédito y débito.</p>
-                    </div>
-                    <button class="btn-accion" onclick="abrirModulo('nota')">Gestionar Notas</button>
-                </div>
+                <nav class="nav-menu">
+                    <button class="nav-item active" id="btn-nav-busqueda" onclick="abrirModulo('busqueda')">
+                        Consulta de Clientes
+                    </button>
+                    <button class="nav-item" id="btn-nav-cliente" onclick="abrirModulo('cliente')">
+                        Registrar Cliente
+                    </button>
+                    <button class="nav-item" id="btn-nav-factura" onclick="abrirModulo('factura')">
+                        Nueva Factura
+                    </button>
+                    <button class="nav-item" id="btn-nav-nota" onclick="abrirModulo('nota')">
+                        Notas de Crédito / Débito
+                    </button>
+                </nav>
             </div>
+            <div>
+                <button class="btn-salir" id="btnCerrarSesion">Cerrar sesión</button>
+            </div>
+        </aside>
 
-            
+        <!-- ÁREA DE MÓDULOS -->
+        <main class="main-content">
 
-
-            
-            <div id="modulo-busqueda" class="modal-contenedor">
-                <div class="modal-header">
-                    <h2>Consulta de Clientes</h2>
-                    <button class="btn-cerrar-modal" onclick="cerrarModulos()">&times;</button>
+            <!-- BÚSQUEDA DE CLIENTES -->
+            <div id="modulo-busqueda" class="panel-contenedor" style="display: block;">
+                <div class="panel-header">
+                    <h2>Búsqueda & Consulta de Clientes</h2>
                 </div>
                 
                 <div class="barra-busqueda">
@@ -326,9 +401,9 @@
                         <option value="id">Buscar por ID</option>
                         <option value="nombre">Buscar por Nombre</option>
                     </select>
-                    <input type="text" id="buscar_criterio" placeholder="Ingresa el ID o nombre..." style="flex: 2;">
-                    <button class="btn-accion" onclick="ejecutarBusquedaCliente()" style="padding: 10px 20px;">Buscar</button>
-                    <button class="btn-accion" onclick="obtenerTodosLosClientes()" style="padding: 10px 20px; background: rgba(56, 189, 248, 0.2);">Ver Todos</button>
+                    <input type="text" id="buscar_criterio" placeholder="Escribe el ID o nombre..." style="flex: 2;">
+                    <button class="btn-guardar" onclick="ejecutarBusquedaCliente()" style="grid-column: auto; margin-top: 0; padding: 8px 18px;">Buscar</button>
+                    <button class="btn-guardar" onclick="obtenerTodosLosClientes()" style="grid-column: auto; margin-top: 0; padding: 8px 18px; background: var(--accent-sage);">Ver Todos</button>
                 </div>
 
                 <div style="overflow-x: auto;">
@@ -348,21 +423,24 @@
                         </thead>
                         <tbody id="cuerpoTablaClientes">
                             <tr>
-                                <td colspan="9" style="text-align: center; color: #64748b;">Selecciona un criterio y presiona "Buscar" o "Ver Todos".</td>
+                                <td colspan="9" style="text-align: center; color: var(--text-body);">Selecciona un criterio y presiona "Buscar" o "Ver Todos".</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+
+                <!-- CONTROLES DE PAGINACIÓN -->
+                <div class="paginacion-bar">
+                    <button id="btnPaginaAnt" class="btn-pagina" onclick="cambiarPagina(-1)" disabled>◀ Anterior</button>
+                    <span id="lblPaginacion">Página 1</span>
+                    <button id="btnPaginaSig" class="btn-pagina" onclick="cambiarPagina(1)" disabled>Siguiente ▶</button>
+                </div>
             </div>
 
-           
-
-
-
-            <div id="modulo-cliente" class="modal-contenedor">
-                <div class="modal-header">
+            <!-- REGISTRAR CLIENTE -->
+            <div id="modulo-cliente" class="panel-contenedor">
+                <div class="panel-header">
                     <h2>Registrar Nuevo Cliente</h2>
-                    <button class="btn-cerrar-modal" onclick="cerrarModulos()">&times;</button>
                 </div>
                 <form id="formCliente" class="grid-form">
                     <div class="campo">
@@ -418,106 +496,100 @@
                 <p id="msgCliente" class="mensaje-estado"></p>
             </div>
 
-          
+            <!-- EMISIÓN DE FACTURA -->
+            <div id="modulo-factura" class="panel-contenedor">
+                <div class="panel-header">
+                    <h2>Emisión de Factura Electrónica</h2>
+                </div>
+                <form id="formFactura" class="grid-form">
+                    <div class="campo">
+                        <label>Código Cliente (cod_cliente)</label>
+                        <input type="number" id="fac_cliente_id" placeholder="ID del cliente" required>
+                    </div>
+                    <div class="campo">
+                        <label>Condición de Venta</label>
+                        <select id="fac_condicion">
+                            <option value="Contado">Contado</option>
+                            <option value="Credito">Crédito</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Medio de Pago</label>
+                        <select id="fac_medio_pago">
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="SINPE Movil">SINPE Móvil</option>
+                            <option value="Cheque">Cheque</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Moneda</label>
+                        <select id="fac_moneda" onchange="actualizarTipoCambio()">
+                            <option value="CRC">CRC (Colones)</option>
+                            <option value="USD">USD (Dólares)</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Tipo de Cambio</label>
+                        <input type="number" step="0.0001" id="fac_tipo_cambio" value="1.0000" required>
+                    </div>
+                    <div class="campo">
+                        <label>Código Producto/Servicio (cod_producto)</label>
+                        <input type="number" id="fac_cod_producto" placeholder="ID del producto" required>
+                    </div>
+                    <div class="campo">
+                        <label>Cantidad</label>
+                        <input type="number" step="0.01" id="fac_cantidad" value="1" oninput="calcularTotales()" required>
+                    </div>
+                    <div class="campo">
+                        <label>Precio Unitario / Subtotal</label>
+                        <input type="number" step="0.01" id="fac_subtotal" placeholder="0.00" oninput="calcularTotales()" required>
+                    </div>
+                    <div class="campo full">
+                        <label>Observaciones</label>
+                        <input type="text" id="fac_observaciones" placeholder="Detalles o notas adicionales de la factura">
+                    </div>
 
+                    <div class="campo full" style="background: #edf4f0; padding: 12px; border-radius: 12px; border: 1.5px solid #d2e4d9;">
+                        <p style="font-family: 'Space Grotesk', sans-serif; font-size: 0.88rem; color: var(--text-heading); font-weight: 700;">
+                            Impuestos (13%): <b id="lbl_impuestos" style="color: var(--accent-lavender);">0.00</b> | 
+                            Monto Total: <b id="lbl_total" style="color: var(--accent-sage);">0.00</b>
+                        </p>
+                    </div>
 
-            
-<div id="modulo-factura" class="modal-contenedor">
-    <div class="modal-header">
-        <h2>Emisión de Factura Electrónica</h2>
-        <button class="btn-cerrar-modal" onclick="cerrarModulos()">&times;</button>
-    </div>
-    <form id="formFactura" class="grid-form">
-        <div class="campo">
-            <label>Código Cliente (cod_cliente)</label>
-            <input type="number" id="fac_cliente_id" placeholder="ID del cliente" required>
-        </div>
-        <div class="campo">
-            <label>Condición de Venta</label>
-            <select id="fac_condicion">
-                <option value="Contado">Contado</option>
-                <option value="Credito">Crédito</option>
-            </select>
-        </div>
-        <div class="campo">
-            <label>Medio de Pago</label>
-            <select id="fac_medio_pago">
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta">Tarjeta</option>
-                <option value="Transferencia">Transferencia</option>
-                <option value="SINPE Movil">SINPE Móvil</option>
-                <option value="Cheque">Cheque</option>
-                <option value="Otros">Otros</option>
-            </select>
-        </div>
-        <div class="campo">
-            <label>Moneda</label>
-            <select id="fac_moneda" onchange="actualizarTipoCambio()">
-                <option value="CRC">CRC (Colones)</option>
-                <option value="USD">USD (Dólares)</option>
-            </select>
-        </div>
-        <div class="campo">
-            <label>Tipo de Cambio</label>
-            <input type="number" step="0.0001" id="fac_tipo_cambio" value="1.0000" required>
-        </div>
-        <div class="campo">
-            <label>Código Producto/Servicio (cod_producto)</label>
-            <input type="number" id="fac_cod_producto" placeholder="ID del producto" required>
-        </div>
-        <div class="campo">
-            <label>Cantidad</label>
-            <input type="number" step="0.01" id="fac_cantidad" value="1" oninput="calcularTotales()" required>
-        </div>
-        <div class="campo">
-            <label>Precio Unitario / Subtotal</label>
-            <input type="number" step="0.01" id="fac_subtotal" placeholder="0.00" oninput="calcularTotales()" required>
-        </div>
-        <div class="campo full">
-            <label>Observaciones</label>
-            <input type="text" id="fac_observaciones" placeholder="Detalles o notas adicionales de la factura">
-        </div>
+                    <button type="submit" class="btn-guardar">Generar y Registrar Factura</button>
+                </form>
+                <p id="msgFactura" class="mensaje-estado"></p>
+            </div>
 
-        
-        <div class="campo full" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px;">
-            <p style="font-size: 0.85rem; color: #94a3b8;">
-                Impuestos (13%): <b id="lbl_impuestos" style="color: #38bdf8;">0.00</b> | 
-                Monto Total: <b id="lbl_total" style="color: #4ade80;">0.00</b>
-            </p>
-        </div>
-
-        <button type="submit" class="btn-guardar">Generar y Registrar Factura</button>
-    </form>
-    <p id="msgFactura" class="mensaje-estado"></p>
-</div>
-        
-
-
-            <div id="modulo-nota" class="modal-contenedor">
-                <div class="modal-header">
+            <!-- NOTAS DE CRÉDITO / DÉBITO -->
+            <div id="modulo-nota" class="panel-contenedor">
+                <div class="panel-header">
                     <h2>Notas de Crédito / Débito</h2>
-                    <button class="btn-cerrar-modal" onclick="cerrarModulos()">&times;</button>
                 </div>
                 <form id="formNota" class="grid-form">
                     <div class="campo">
-                        <label>Código Factura Referencia</label>
-                        <input type="number" id="nota_factura_id" required>
+                        <label>Código Factura Referencia (num_factura)</label>
+                        <input type="number" id="nota_factura_id" placeholder="Número de factura" required>
                     </div>
                     <div class="campo">
-                        <label>Tipo de Nota</label>
-                        <select id="nota_tipo">
+                        <label>Tipo de Nota (ind_tipo)</label>
+                        <select id="nota_tipo" required>
                             <option value="Credito">Nota de Crédito</option>
                             <option value="Debito">Nota de Débito</option>
                         </select>
                     </div>
                     <div class="campo full">
-                        <label>Motivo</label>
-                        <textarea id="nota_motivo" rows="3" placeholder="Descripción de la corrección..." required></textarea>
+                        <label>Motivo (des_motivo)</label>
+                        <textarea id="nota_motivo" rows="2" placeholder="Motivo de la corrección o anulación..." required></textarea>
                     </div>
                     <button type="submit" class="btn-guardar">Aplicar Nota</button>
                 </form>
                 <p id="msgNota" class="mensaje-estado"></p>
             </div>
+
         </main>
     </div>
 
@@ -527,22 +599,25 @@
         const API_FACTURAS_URL = "http://localhost:8084/facturacion/api/facturas";
         const API_NOTAS_URL = "http://localhost:8084/facturacion/api/notas";
 
-        // CONTROL DE NAVEGACIÓN DE PANELES
+        // VARIABLES DE PAGINACIÓN EN MEMORIA
+        let listaClientesCompleta = [];
+        let paginaActual = 1;
+        const registrosPorPagina = 5;
+
+        // CONTROL DE NAVEGACIÓN
         function abrirModulo(modulo) {
-            cerrarModulos();
+            document.querySelectorAll('.panel-contenedor').forEach(m => m.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            
             document.getElementById(`modulo-${modulo}`).style.display = 'block';
+            document.getElementById(`btn-nav-${modulo}`).classList.add('active');
+
             if (modulo === 'busqueda') {
                 obtenerTodosLosClientes();
             }
         }
 
-        function cerrarModulos() {
-            document.querySelectorAll('.modal-contenedor').forEach(m => m.style.display = 'none');
-        }
-
-       
-
-        // Consulta  de Clientes
+        // Consulta de Clientes
         async function obtenerTodosLosClientes() {
             const cuerpo = document.getElementById("cuerpoTablaClientes");
             cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">Cargando lista de clientes...</td></tr>`;
@@ -551,11 +626,13 @@
                 const res = await fetch(API_CLIENTES_URL);
                 if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
                 
-                const clientes = await res.json();
-                renderizarTablaClientes(clientes);
+                listaClientesCompleta = await res.json();
+                paginaActual = 1;
+                renderizarTablaClientesConPaginacion();
             } catch (err) {
                 console.error("Error al obtener clientes:", err);
-                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #ef4444;">No se pudieron cargar los registros. (${err.message})</td></tr>`;
+                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--accent-terracotta);">No se pudieron cargar los registros. (${err.message})</td></tr>`;
+                actualizarEstadoPaginacion(0);
             }
         }
 
@@ -573,20 +650,21 @@
             cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">Buscando...</td></tr>`;
 
             try {
-                let clientes = [];
+                listaClientesCompleta = [];
 
                 if (tipo === "id") {
                     const res = await fetch(`${API_CLIENTES_URL}/${encodeURIComponent(criterio)}`);
                     
                     if (res.status === 404) {
-                        cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #f59e0b;">No existe el cliente con ID: ${criterio}</td></tr>`;
+                        cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--accent-terracotta);">No existe el cliente con ID: ${criterio}</td></tr>`;
+                        actualizarEstadoPaginacion(0);
                         return;
                     }
 
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
                     const cliente = await res.json();
-                    if (cliente) clientes = [cliente];
+                    if (cliente) listaClientesCompleta = [cliente];
 
                 } else {
                     const res = await fetch(`${API_CLIENTES_URL}/buscar/nombre`, {
@@ -596,14 +674,74 @@
                     });
 
                     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                    clientes = await res.json();
+                    listaClientesCompleta = await res.json();
                 }
 
-                renderizarTablaClientes(clientes);
+                paginaActual = 1;
+                renderizarTablaClientesConPaginacion();
 
             } catch (err) {
                 console.error("Error al realizar la consulta:", err);
-                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #ef4444;">Error al consultar el servidor. (${err.message})</td></tr>`;
+                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--accent-terracotta);">Error al consultar el servidor. (${err.message})</td></tr>`;
+                actualizarEstadoPaginacion(0);
+            }
+        }
+
+        // FUNCIÓN DE RENDEREADO Y PAGINACIÓN
+        function renderizarTablaClientesConPaginacion() {
+            const cuerpo = document.getElementById("cuerpoTablaClientes");
+
+            if (!listaClientesCompleta || listaClientesCompleta.length === 0) {
+                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">No hay clientes para mostrar.</td></tr>`;
+                actualizarEstadoPaginacion(0);
+                return;
+            }
+
+            const totalPaginas = Math.ceil(listaClientesCompleta.length / registrosPorPagina);
+            if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+            if (paginaActual < 1) paginaActual = 1;
+
+            const inicio = (paginaActual - 1) * registrosPorPagina;
+            const fin = inicio + registrosPorPagina;
+            const clientesPagina = listaClientesCompleta.slice(inicio, fin);
+
+            cuerpo.innerHTML = clientesPagina.map(c => `
+                <tr>
+                    <td>${c.codCliente != null ? c.codCliente : ''}</td>
+                    <td>${c.nomCliente != null ? c.nomCliente : ''}</td>
+                    <td>${c.tipIdentificacion != null ? c.tipIdentificacion : ''}</td>
+                    <td>${c.numIdentificacion != null ? c.numIdentificacion : ''}</td>
+                    <td>${c.numTelefono != null ? c.numTelefono : ''}</td>
+                    <td>${c.desCorreo != null ? c.desCorreo : ''}</td>
+                    <td>${c.desProvincia || ''}, ${c.desCanton || ''}</td>
+                    <td>${c.desActividadEconomica != null ? c.desActividadEconomica : ''}</td>
+                    <td>
+                        <button class="btn-eliminar-tabla" onclick="eliminarCliente(${c.codCliente})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            actualizarEstadoPaginacion(totalPaginas);
+        }
+
+        function cambiarPagina(delta) {
+            paginaActual += delta;
+            renderizarTablaClientesConPaginacion();
+        }
+
+        function actualizarEstadoPaginacion(totalPaginas) {
+            const btnAnt = document.getElementById("btnPaginaAnt");
+            const btnSig = document.getElementById("btnPaginaSig");
+            const lbl = document.getElementById("lblPaginacion");
+
+            if (totalPaginas === 0) {
+                lbl.textContent = "Página 0 de 0";
+                btnAnt.disabled = true;
+                btnSig.disabled = true;
+            } else {
+                lbl.textContent = `Página ${paginaActual} de ${totalPaginas} (${listaClientesCompleta.length} registros)`;
+                btnAnt.disabled = (paginaActual === 1);
+                btnSig.disabled = (paginaActual === totalPaginas);
             }
         }
 
@@ -611,7 +749,7 @@
         document.getElementById("formCliente").addEventListener("submit", async (e) => {
             e.preventDefault();
             const msg = document.getElementById("msgCliente");
-            msg.style.color = "#38bdf8";
+            msg.style.color = "var(--accent-lavender)";
             msg.textContent = "Procesando registro en la base de datos...";
 
             const payload = {
@@ -637,7 +775,7 @@
 
                 if (res.status === 201 || res.ok) {
                     const clienteGuardado = await res.json();
-                    msg.style.color = "#4ade80";
+                    msg.style.color = "var(--accent-sage)";
                     msg.textContent = `Cliente "${clienteGuardado.nomCliente || payload.nomCliente}" registrado e insertado con éxito.`;
                     e.target.reset();
                     
@@ -646,12 +784,12 @@
                     }, 1200);
                 } else {
                     const errText = await res.text();
-                    msg.style.color = "#ef4444";
+                    msg.style.color = "var(--accent-terracotta)";
                     msg.textContent = `Error (${res.status}): El servidor rechazó el registro. ${errText}`;
                 }
             } catch (err) {
                 console.error("Error al guardar cliente:", err);
-                msg.style.color = "#ef4444";
+                msg.style.color = "var(--accent-terracotta)";
                 msg.textContent = "Error de conexión al intentar guardar el cliente.";
             }
         });
@@ -679,88 +817,11 @@
             }
         }
 
-        function renderizarTablaClientes(clientes) {
-            const cuerpo = document.getElementById("cuerpoTablaClientes");
-
-            if (!clientes || clientes.length === 0) {
-                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">No hay clientes para mostrar.</td></tr>`;
-                return;
-            }
-
-            cuerpo.innerHTML = clientes.map(c => `
-                <tr>
-                    <td>${c.codCliente != null ? c.codCliente : ''}</td>
-                    <td>${c.nomCliente != null ? c.nomCliente : ''}</td>
-                    <td>${c.tipIdentificacion != null ? c.tipIdentificacion : ''}</td>
-                    <td>${c.numIdentificacion != null ? c.numIdentificacion : ''}</td>
-                    <td>${c.numTelefono != null ? c.numTelefono : ''}</td>
-                    <td>${c.desCorreo != null ? c.desCorreo : ''}</td>
-                    <td>${c.desProvincia || ''}, ${c.desCanton || ''}</td>
-                    <td>${c.desActividadEconomica != null ? c.desActividadEconomica : ''}</td>
-                    <td>
-                        <button class="btn-eliminar-tabla" onclick="eliminarCliente(${c.codCliente})">Eliminar</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
- 
-
-
-        document.getElementById("formFactura").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const msg = document.getElementById("msgFactura");
-            msg.style.color = "#38bdf8";
-            msg.textContent = "Procesando emisión de factura...";
-
-            const subtotal = parseFloat(document.getElementById("fac_subtotal").value) || 0;
-            const totalImpuestos = parseFloat((subtotal * 0.13).toFixed(2));
-            const montoTotal = parseFloat((subtotal + totalImpuestos).toFixed(2));
-            const monedaSel = document.getElementById("fac_moneda").value;
-
-            const payloadFactura = {
-                codCliente: parseInt(document.getElementById("fac_cliente_id").value),
-                condicionVenta: document.getElementById("fac_condicion").value,
-                medioPago: document.getElementById("fac_medio_pago").value,
-                moneda: monedaSel,
-                tipoCambio: monedaSel === 'USD' ? 515.00 : 1.00,
-                observaciones: `CABYS: ${document.getElementById("fac_producto_cabys").value}`,
-                subtotal: subtotal,
-                totalImpuestos: totalImpuestos,
-                montoTotal: montoTotal
-            };
-
-            try {
-                const res = await fetch(API_FACTURAS_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json; charset=UTF-8" },
-                    body: JSON.stringify(payloadFactura)
-                });
-
-                if (res.ok || res.status === 201) {
-                    const facturaRegistrada = await res.json();
-                    msg.style.color = "#4ade80";
-                    msg.textContent = `Factura #${facturaRegistrada.numFactura || facturaRegistrada.num_factura || 'generada'} emitiada con éxito. Total: ${monedaSel} ${montoTotal}`;
-                    e.target.reset();
-                } else {
-                    const errText = await res.text();
-                    msg.style.color = "#ef4444";
-                    msg.textContent = `Error (${res.status}): No se pudo registrar la factura. ${errText}`;
-                }
-            } catch (err) {
-                console.error("Error al emitir factura:", err);
-                msg.style.color = "#ef4444";
-                msg.textContent = "Error de conexión con el servidor backend (8084).";
-            }
-        });
-
-
-
-
+        // LÓGICA DE NOTAS
         document.getElementById("formNota").addEventListener("submit", async (e) => {
             e.preventDefault();
             const msg = document.getElementById("msgNota");
-            msg.style.color = "#38bdf8";
+            msg.style.color = "var(--accent-lavender)";
             msg.textContent = "Registrando nota en la base de datos...";
 
             const payloadNota = {
@@ -777,102 +838,101 @@
                 });
 
                 if (res.ok || res.status === 201) {
-                    msg.style.color = "#4ade80";
-                    msg.textContent = `Nota de ${payloadNota.indTipo} aplicada a la Factura #${payloadNota.numFactura} con éxito.`;
+                    const notaGuardada = await res.json();
+                    msg.style.color = "var(--accent-sage)";
+                    msg.textContent = `Nota de ${payloadNota.indTipo} #${notaGuardada.codNota || ''} aplicada a la Factura #${payloadNota.numFactura} con éxito.`;
                     e.target.reset();
                 } else {
                     const errText = await res.text();
-                    msg.style.color = "#ef4444";
+                    msg.style.color = "var(--accent-terracotta)";
                     msg.textContent = `Error (${res.status}): No se pudo procesar la nota. ${errText}`;
                 }
             } catch (err) {
                 console.error("Error al aplicar la nota:", err);
-                msg.style.color = "#ef4444";
+                msg.style.color = "var(--accent-terracotta)";
                 msg.textContent = "Error de conexión al procesar la nota.";
             }
         });
 
-        // Añadir o reemplazar dentro de la etiqueta <script> en digitador.html
-
-function actualizarTipoCambio() {
-    const moneda = document.getElementById("fac_moneda").value;
-    const inputTC = document.getElementById("fac_tipo_cambio");
-    if (moneda === "USD") {
-        inputTC.value = "515.0000";
-    } else {
-        inputTC.value = "1.0000";
-    }
-}
-
-function calcularTotales() {
-    const cantidad = parseFloat(document.getElementById("fac_cantidad").value) || 0;
-    const subtotal = parseFloat(document.getElementById("fac_subtotal").value) || 0;
-    
-    const montoSubtotalCalculado = cantidad * subtotal;
-    const impuestos = montoSubtotalCalculado * 0.13;
-    const total = montoSubtotalCalculado + impuestos;
-
-    document.getElementById("lbl_impuestos").innerText = impuestos.toFixed(2);
-    document.getElementById("lbl_total").innerText = total.toFixed(2);
-}
-
-document.getElementById("formFactura").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const msg = document.getElementById("msgFactura");
-    msg.style.color = "#38bdf8";
-    msg.textContent = "Procesando emisión de la factura...";
-
-    const cantidad = parseFloat(document.getElementById("fac_cantidad").value) || 1;
-    const subtotalUnitario = parseFloat(document.getElementById("fac_subtotal").value) || 0;
-    
-    const subtotalTotal = parseFloat((cantidad * subtotalUnitario).toFixed(2));
-    const totalImpuestos = parseFloat((subtotalTotal * 0.13).toFixed(2));
-    const montoTotal = parseFloat((subtotalTotal + totalImpuestos).toFixed(2));
-
-    const payloadFactura = {
-        codCliente: parseInt(document.getElementById("fac_cliente_id").value),
-        condicionVenta: document.getElementById("fac_condicion").value,
-        medioPago: document.getElementById("fac_medio_pago").value,
-        moneda: document.getElementById("fac_moneda").value,
-        tipoCambio: parseFloat(document.getElementById("fac_tipo_cambio").value),
-        observaciones: document.getElementById("fac_observaciones").value.trim(),
-        subtotal: subtotalTotal,
-        totalImpuestos: totalImpuestos,
-        montoTotal: montoTotal,
-        detalles: [
-            {
-                codProducto: parseInt(document.getElementById("fac_cod_producto").value),
-                cantidad: cantidad,
-                montoLinea: subtotalTotal
+        function actualizarTipoCambio() {
+            const moneda = document.getElementById("fac_moneda").value;
+            const inputTC = document.getElementById("fac_tipo_cambio");
+            if (moneda === "USD") {
+                inputTC.value = "515.0000";
+            } else {
+                inputTC.value = "1.0000";
             }
-        ]
-    };
-
-    try {
-        const res = await fetch(API_FACTURAS_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json; charset=UTF-8" },
-            body: JSON.stringify(payloadFactura)
-        });
-
-        if (res.ok || res.status === 201) {
-            const facturaRegistrada = await res.json();
-            msg.style.color = "#4ade80";
-            msg.textContent = `Factura #${facturaRegistrada.numFactura || 'generada'} registrada con éxito en SQL Server.`;
-            e.target.reset();
-            actualizarTipoCambio();
-            calcularTotales();
-        } else {
-            const errText = await res.text();
-            msg.style.color = "#ef4444";
-            msg.textContent = `Error (${res.status}): No se pudo registrar la factura. ${errText}`;
         }
-    } catch (err) {
-        console.error("Error al emitir factura:", err);
-        msg.style.color = "#ef4444";
-        msg.textContent = "Error de conexión al procesar la factura.";
-    }
-});
+
+        function calcularTotales() {
+            const cantidad = parseFloat(document.getElementById("fac_cantidad").value) || 0;
+            const subtotal = parseFloat(document.getElementById("fac_subtotal").value) || 0;
+            
+            const montoSubtotalCalculado = cantidad * subtotal;
+            const impuestos = montoSubtotalCalculado * 0.13;
+            const total = montoSubtotalCalculado + impuestos;
+
+            document.getElementById("lbl_impuestos").innerText = impuestos.toFixed(2);
+            document.getElementById("lbl_total").innerText = total.toFixed(2);
+        }
+
+        document.getElementById("formFactura").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("msgFactura");
+            msg.style.color = "var(--accent-lavender)";
+            msg.textContent = "Procesando emisión de la factura...";
+
+            const cantidad = parseFloat(document.getElementById("fac_cantidad").value) || 1;
+            const subtotalUnitario = parseFloat(document.getElementById("fac_subtotal").value) || 0;
+            
+            const subtotalTotal = parseFloat((cantidad * subtotalUnitario).toFixed(2));
+            const totalImpuestos = parseFloat((subtotalTotal * 0.13).toFixed(2));
+            const montoTotal = parseFloat((subtotalTotal + totalImpuestos).toFixed(2));
+
+            const payloadFactura = {
+                codCliente: parseInt(document.getElementById("fac_cliente_id").value),
+                condicionVenta: document.getElementById("fac_condicion").value,
+                medioPago: document.getElementById("fac_medio_pago").value,
+                moneda: document.getElementById("fac_moneda").value,
+                tipoCambio: parseFloat(document.getElementById("fac_tipo_cambio").value),
+                observaciones: document.getElementById("fac_observaciones").value.trim(),
+                subtotal: subtotalTotal,
+                totalImpuestos: totalImpuestos,
+                montoTotal: montoTotal,
+                detalles: [
+                    {
+                        codProducto: parseInt(document.getElementById("fac_cod_producto").value),
+                        cantidad: cantidad,
+                        montoLinea: subtotalTotal
+                    }
+                ]
+            };
+
+            try {
+                const res = await fetch(API_FACTURAS_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json; charset=UTF-8" },
+                    body: JSON.stringify(payloadFactura)
+                });
+
+                if (res.ok || res.status === 201) {
+                    const facturaRegistrada = await res.json();
+                    msg.style.color = "var(--accent-sage)";
+                    msg.textContent = `Factura #${facturaRegistrada.numFactura || 'generada'} registrada con éxito en SQL Server.`;
+                    e.target.reset();
+                    actualizarTipoCambio();
+                    calcularTotales();
+                } else {
+                    const errText = await res.text();
+                    msg.style.color = "var(--accent-terracotta)";
+                    msg.textContent = `Error (${res.status}): No se pudo registrar la factura. ${errText}`;
+                }
+            } catch (err) {
+                console.error("Error al emitir factura:", err);
+                msg.style.color = "var(--accent-terracotta)";
+                msg.textContent = "Error de conexión al procesar la factura.";
+            }
+        });
 
         // Cierre de Sesión
         document.getElementById("btnCerrarSesion").addEventListener("click", () => {

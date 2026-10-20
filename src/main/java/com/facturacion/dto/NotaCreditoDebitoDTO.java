@@ -3,10 +3,11 @@ package com.facturacion.dto;
 import java.time.LocalDateTime;
 
 public class NotaCreditoDebitoDTO {
+
     private Integer codNota;
     private LocalDateTime fecNota;
     private Integer numFactura;
-    private String indTipo; // Credito o Debito
+    private String indTipo;
     private String desMotivo;
 
     public NotaCreditoDebitoDTO() {}
