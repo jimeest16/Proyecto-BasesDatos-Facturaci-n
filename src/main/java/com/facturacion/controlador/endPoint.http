@@ -1,13 +1,31 @@
 
 @baseUrl = http://localhost:8084/facturacion
 
-POST {{baseUrl}}/clientes
-Accept: application/json
+### 0. Iniciar Sesion - Digitador 
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "usr_digitador",
+  "contrasena": "DigitadorPass123"
+}
+
+### 0.1 Iniciar Sesion - Consulta 
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "usr_consulta",
+  "contrasena": "ConsultaPass123"
+}
+
+### 1. Crear un Cliente (POST)
+POST {{baseUrl}}/api/clientes
 Content-Type: application/json
 
 {
   "nomCliente": "Empresa Ejemplo S.A.",
-  "tipIdentificacion": "PJ",
+  "tipIdentificacion": "CJ",
   "numIdentificacion": "3101123456",
   "numTelefono": "88889999",
   "desCorreo": "contacto@ejemplo.com",
@@ -19,13 +37,30 @@ Content-Type: application/json
   "desActividadEconomica": "Servicios de Software"
 }
 
-###
+### 2. Consultar Todos los Clientes
+GET {{baseUrl}}/api/clientes
 
+### 3. Consultar Cliente por ID 
+GET {{baseUrl}}/api/clientes/1
 
-GET {{baseUrl}}/clientes
+### 4. Actualizar Cliente por ID 
+PUT {{baseUrl}}/clientes/1
+Content-Type: application/json
 
-###
+{
+  "nomCliente": "Empresa Ejemplo Modificada S.A.",
+  "tipIdentificacion": "CJ",
+  "numIdentificacion": "3101123456",
+  "numTelefono": "22223333",
+  "desCorreo": "nuevo_correo@ejemplo.com",
+  "desProvincia": "Cartago",
+  "desCanton": "Paraíso",
+  "desDistrito": "Paraíso",
+  "desBarrio": "La Laguna",
+  "desProfesion": "Desarrollador Inmobiliario",
+  "desActividadEconomica": "Venta de Terrenos",
+  "indEstado": "A"
+}
 
-### 3. Probar buscar cliente por Código / ID (GET)
-GET {{baseUrl}}/clientes/1
-
+### 5. Eliminar Cliente por ID 
+DELETE {{baseUrl}}/clientes/1

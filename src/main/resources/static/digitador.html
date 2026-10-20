@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del Digitador - Sistema de Facturación</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #0b0f19;
+            color: #f8fafc;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 1050px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-salir {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-salir:hover {
+            background: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .opciones {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .tarjeta {
+            background: rgba(18, 24, 38, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .tarjeta h3 {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .tarjeta p {
+            color: #94a3b8;
+            font-size: 0.82rem;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .btn-accion {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-accion:hover {
+            background: #38bdf8;
+            color: #0b0f19;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+        }
+
+        .modal-contenedor {
+            display: none;
+            background: rgba(18, 24, 38, 0.95);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 24px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h2 {
+            font-size: 1.3rem;
+            color: #38bdf8;
+        }
+
+        .btn-cerrar-modal {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .campo.full {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+
+        select option {
+            background: #121826;
+            color: #ffffff;
+        }
+
+        .btn-guardar {
+            grid-column: span 2;
+            padding: 12px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+            color: #ffffff;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-eliminar-tabla {
+            padding: 4px 10px;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .btn-eliminar-tabla:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+
+        .barra-busqueda {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tabla-resultados {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.88rem;
+        }
+
+        .tabla-resultados th {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tabla-resultados td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+        }
+
+        .mensaje-estado {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #38bdf8;
+        }
+
+        @media (max-width: 850px) {
+            .opciones {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 550px) {
+            .opciones, .grid-form, .barra-busqueda {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+            }
+            .campo.full, .btn-guardar {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <header>
+            <h1>Portal Facturación - Propi</h1>
+            <button class="btn-salir" id="btnCerrarSesion">Cerrar sesión</button>
+        </header>
+
+        <main>
+            <div class="opciones">
+                <div class="tarjeta">
+                    <div>
+                        <h3>Consultas</h3>
+                        <p>Buscar clientes por ID o por Nombre.</p>
+                    </div>
+                    <button class="btn-accion" onclick="abrirModulo('busqueda')">Buscar Clientes</button>
+                </div>
+
+                <div class="tarjeta">
+                    <div>
+                        <h3>Clientes</h3>
+                        <p>Registro de datos de clientes con cifrado columnar.</p>
+                    </div>
+                    <button class="btn-accion" onclick="abrirModulo('cliente')">Gestionar Clientes</button>
+                </div>
+
+                <div class="tarjeta">
+                    <div>
+                        <h3>Facturas</h3>
+                        <p>Emisión y registro de facturas con código CABYS.</p>
+                    </div>
+                    <button class="btn-accion" onclick="abrirModulo('factura')">Nueva Factura</button>
+                </div>
+
+                <div class="tarjeta">
+                    <div>
+                        <h3>Notas</h3>
+                        <p>Aplicación de notas de crédito y débito.</p>
+                    </div>
+                    <button class="btn-accion" onclick="abrirModulo('nota')">Gestionar Notas</button>
+                </div>
+            </div>
+
+            <!-- BÚSQUEDA DE CLIENTES (POR ID O NOMBRE) -->
+            <div id="modulo-busqueda" class="modal-contenedor">
+                <div class="modal-header">
+                    <h2>Consulta de Clientes</h2>
+                    <button class="btn-cerrar-modal" onclick="cerrarModulos()">&times;</button>
+                </div>
+                
+                <div class="barra-busqueda">
+                    <select id="tipo_busqueda" style="flex: 1;">
+                        <option value="id">Buscar por ID</option>
+                        <option value="nombre">Buscar por Nombre</option>
+                    </select>
+                    <input type="text" id="buscar_criterio" placeholder="Ingresa el ID o nombre..." style="flex: 2;">
+                    <button class="btn-accion" onclick="ejecutarBusquedaCliente()" style="padding: 10px 20px;">Buscar</button>
+                    <button class="btn-accion" onclick="obtenerTodosLosClientes()" style="padding: 10px 20px; background: rgba(56, 189, 248, 0.2);">Ver Todos</button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="tabla-resultados">
+                        <thead>
+                            <tr>
+                                <th>Cod</th>
+                                <th>Nombre</th>
+                                <th>Tipo ID</th>
+                                <th>Identificación</th>
+                                <th>Teléfono</th>
+                                <th>Correo</th>
+                                <th>Ubicación</th>
+                                <th>Actividad</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTablaClientes">
+                            <tr>
+                                <td colspan="9" style="text-align: center; color: #64748b;">Selecciona un criterio y presiona "Buscar" o "Ver Todos".</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- FORMULARIO DE CLIENTES -->
+            <div id="modulo-cliente" class="modal-contenedor">
+                <div class="modal-header">
+                    <h2>Registrar Nuevo Cliente</h2>
+                    <button class="btn-cerrar-modal" onclick="cerrarModulos()">&times;</button>
+                </div>
+                <form id="formCliente" class="grid-form">
+                    <div class="campo">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="nomCliente" required>
+                    </div>
+                    <div class="campo">
+                        <label>Tipo Identificación</label>
+                        <select id="tipIdentificacion" required>
+                            <option value="Fisica">Cédula Física</option>
+                            <option value="Juridica">Cédula Jurídica</option>
+                            <option value="DIMEX">DIMEX</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Número Identificación (Sensible)</label>
+                        <input type="text" id="numIdentificacion" placeholder="1-0000-0000" required>
+                    </div>
+                    <div class="campo">
+                        <label>Teléfono (Sensible)</label>
+                        <input type="text" id="numTelefono" placeholder="88888888" required>
+                    </div>
+                    <div class="campo">
+                        <label>Correo Electrónico (Sensible)</label>
+                        <input type="email" id="desCorreo" placeholder="correo@ejemplo.com" required>
+                    </div>
+                    <div class="campo">
+                        <label>Profesión / Oficio</label>
+                        <input type="text" id="desProfesion" placeholder="Ingeniero / Comerciante" required>
+                    </div>
+                    <div class="campo">
+                        <label>Actividad Económica</label>
+                        <input type="text" id="desActividadEconomica" placeholder="Servicios Inmobiliarios" required>
+                    </div>
+                    <div class="campo">
+                        <label>Provincia</label>
+                        <input type="text" id="desProvincia" placeholder="Cartago" required>
+                    </div>
+                    <div class="campo">
+                        <label>Cantón</label>
+                        <input type="text" id="desCanton" placeholder="Paraíso" required>
+                    </div>
+                    <div class="campo">
+                        <label>Distrito</label>
+                        <input type="text" id="desDistrito" placeholder="Paraíso" required>
+                    </div>
+                    <div class="campo full">
+                        <label>Barrio</label>
+                        <input type="text" id="desBarrio" placeholder="Centro">
+                    </div>
+                    <button type="submit" class="btn-guardar">Guardar Cliente</button>
+                </form>
+                <p id="msgCliente" class="mensaje-estado"></p>
+            </div>
+
+            <!-- FORMULARIO DE FACTURAS -->
+            <div id="modulo-factura" class="modal-contenedor">
+                <div class="modal-header">
+                    <h2>Emisión de Factura Electrónica</h2>
+                    <button class="btn-cerrar-modal" onclick="cerrarModulos()">&times;</button>
+                </div>
+                <form id="formFactura" class="grid-form">
+                    <div class="campo">
+                        <label>ID Cliente</label>
+                        <input type="number" id="fac_cliente_id" placeholder="Código de cliente" required>
+                    </div>
+                    <div class="campo">
+                        <label>Condición de Venta</label>
+                        <select id="fac_condicion">
+                            <option value="Contado">Contado</option>
+                            <option value="Credito">Crédito</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Medio de Pago</label>
+                        <select id="fac_medio_pago">
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="SINPE">SINPE Móvil</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="Efectivo">Efectivo</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Moneda</label>
+                        <select id="fac_moneda">
+                            <option value="CRC">CRC (Colones)</option>
+                            <option value="USD">USD (Dólares)</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Producto / Servicio (CABYS)</label>
+                        <select id="fac_producto_cabys" required>
+                            <option value="">-- Seleccionar Item --</option>
+                            <option value="CABYS-001">Venta de Inmueble (IVA 13%)</option>
+                            <option value="CABYS-002">Asesoría Inmobiliaria (IVA 13%)</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Monto Subtotal</label>
+                        <input type="number" step="0.01" id="fac_subtotal" required>
+                    </div>
+                    <button type="submit" class="btn-guardar">Generar y Registrar Factura</button>
+                </form>
+                <p id="msgFactura" class="mensaje-estado"></p>
+            </div>
+
+            <!-- FORMULARIO DE NOTAS -->
+            <div id="modulo-nota" class="modal-contenedor">
+                <div class="modal-header">
+                    <h2>Notas de Crédito / Débito</h2>
+                    <button class="btn-cerrar-modal" onclick="cerrarModulos()">&times;</button>
+                </div>
+                <form id="formNota" class="grid-form">
+                    <div class="campo">
+                        <label>Código Factura Referencia</label>
+                        <input type="number" id="nota_factura_id" required>
+                    </div>
+                    <div class="campo">
+                        <label>Tipo de Nota</label>
+                        <select id="nota_tipo">
+                            <option value="Credito">Nota de Crédito</option>
+                            <option value="Debito">Nota de Débito</option>
+                        </select>
+                    </div>
+                    <div class="campo full">
+                        <label>Motivo</label>
+                        <textarea id="nota_motivo" rows="3" placeholder="Descripción de la corrección..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-guardar">Aplicar Nota</button>
+                </form>
+                <p id="msgNota" class="mensaje-estado"></p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // URL Base con el puerto (8084) y el context-path (/facturacion) configurados en application.properties
+        const API_CLIENTES_URL = "http://localhost:8084/facturacion/api/clientes";
+
+        // --- CONTROL DE VISTAS Y MÓDULOS ---
+        function abrirModulo(modulo) {
+            cerrarModulos();
+            document.getElementById(`modulo-${modulo}`).style.display = 'block';
+            if (modulo === 'busqueda') {
+                obtenerTodosLosClientes();
+            }
+        }
+
+        function cerrarModulos() {
+            document.querySelectorAll('.modal-contenedor').forEach(m => m.style.display = 'none');
+        }
+
+        // --- MÉTODOS DEL CLIENTECONTROLADOR ---
+
+        // 1. GET /facturacion/api/clientes -> getAllClientes()
+        async function obtenerTodosLosClientes() {
+            const cuerpo = document.getElementById("cuerpoTablaClientes");
+            cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">Cargando lista de clientes...</td></tr>`;
+
+            try {
+                const res = await fetch(API_CLIENTES_URL);
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                
+                const clientes = await res.json();
+                renderizarTablaClientes(clientes);
+            } catch (err) {
+                console.error("Error al obtener clientes:", err);
+                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #ef4444;">No se pudieron cargar los registros. (${err.message})</td></tr>`;
+            }
+        }
+
+        // 2. BÚSQUEDA POR ID O POR NOMBRE
+        async function ejecutarBusquedaCliente() {
+            const tipo = document.getElementById("tipo_busqueda").value;
+            const criterio = document.getElementById("buscar_criterio").value.trim();
+            const cuerpo = document.getElementById("cuerpoTablaClientes");
+
+            if (!criterio) {
+                obtenerTodosLosClientes();
+                return;
+            }
+
+            cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">Buscando...</td></tr>`;
+
+            try {
+                let clientes = [];
+
+                if (tipo === "id") {
+                    // GET /facturacion/api/clientes/{id} -> getClienteByCodCliente(@PathVariable int id)
+                    const res = await fetch(`${API_CLIENTES_URL}/${encodeURIComponent(criterio)}`);
+                    
+                    if (res.status === 404) {
+                        cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #f59e0b;">No existe el cliente con ID: ${criterio}</td></tr>`;
+                        return;
+                    }
+
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                    const cliente = await res.json();
+                    if (cliente) clientes = [cliente];
+
+                } else {
+                    // POST /facturacion/api/clientes/buscar/nombre -> getClientesByNombre(@RequestBody String nombre)
+                    const res = await fetch(`${API_CLIENTES_URL}/buscar/nombre`, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain; charset=UTF-8" },
+                        body: criterio
+                    });
+
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    clientes = await res.json();
+                }
+
+                renderizarTablaClientes(clientes);
+
+            } catch (err) {
+                console.error("Error al realizar la consulta:", err);
+                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #ef4444;">Error al consultar el servidor. (${err.message})</td></tr>`;
+            }
+        }
+
+        // 3. POST /facturacion/api/clientes -> createCliente(@RequestBody ClienteDTO request)
+        document.getElementById("formCliente").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("msgCliente");
+            msg.style.color = "#38bdf8";
+            msg.textContent = "Procesando registro en la base de datos...";
+
+            const payload = {
+                nomCliente: document.getElementById("nomCliente").value,
+                tipIdentificacion: document.getElementById("tipIdentificacion").value,
+                numIdentificacion: document.getElementById("numIdentificacion").value,
+                numTelefono: document.getElementById("numTelefono").value,
+                desCorreo: document.getElementById("desCorreo").value,
+                desProvincia: document.getElementById("desProvincia").value,
+                desCanton: document.getElementById("desCanton").value,
+                desDistrito: document.getElementById("desDistrito").value,
+                desBarrio: document.getElementById("desBarrio").value,
+                desProfesion: document.getElementById("desProfesion").value,
+                desActividadEconomica: document.getElementById("desActividadEconomica").value
+            };
+
+            try {
+                const res = await fetch(API_CLIENTES_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.status === 201 || res.ok) {
+                    const clienteGuardado = await res.json();
+                    msg.style.color = "#4ade80";
+                    msg.textContent = `Cliente "${clienteGuardado.nomCliente || ''}" registrado con éxito.`;
+                    e.target.reset();
+                    
+                    // Refresca la tabla automáticamente tras guardar
+                    setTimeout(() => {
+                        abrirModulo('busqueda');
+                    }, 1000);
+                } else {
+                    msg.style.color = "#ef4444";
+                    msg.textContent = `Error (${res.status}): El servidor rechazó el registro.`;
+                }
+            } catch (err) {
+                console.error("Error al guardar cliente:", err);
+                msg.style.color = "#ef4444";
+                msg.textContent = "Error de conexión al intentar guardar el cliente.";
+            }
+        });
+
+        // 4. DELETE /facturacion/api/clientes/{id} -> deleteCliente(@PathVariable int id)
+        async function eliminarCliente(id) {
+            if (!confirm(`¿Desea eliminar al cliente con ID ${id}?`)) return;
+
+            try {
+                const res = await fetch(`${API_CLIENTES_URL}/${id}`, {
+                    method: "DELETE"
+                });
+
+                if (res.ok || res.status === 204) {
+                    alert("Cliente eliminado con éxito.");
+                    obtenerTodosLosClientes();
+                } else if (res.status === 404) {
+                    alert("El cliente no fue encontrado.");
+                } else {
+                    alert(`Error al eliminar (${res.status}).`);
+                }
+            } catch (err) {
+                console.error("Error al eliminar cliente:", err);
+                alert("Error de conexión al intentar eliminar.");
+            }
+        }
+
+        // RENDERIZADO DE TABLA
+        function renderizarTablaClientes(clientes) {
+            const cuerpo = document.getElementById("cuerpoTablaClientes");
+
+            if (!clientes || clientes.length === 0) {
+                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">No hay clientes para mostrar.</td></tr>`;
+                return;
+            }
+
+            cuerpo.innerHTML = clientes.map(c => `
+                <tr>
+                    <td>${c.codCliente != null ? c.codCliente : ''}</td>
+                    <td>${c.nomCliente != null ? c.nomCliente : ''}</td>
+                    <td>${c.tipIdentificacion != null ? c.tipIdentificacion : ''}</td>
+                    <td>${c.numIdentificacion != null ? c.numIdentificacion : ''}</td>
+                    <td>${c.numTelefono != null ? c.numTelefono : ''}</td>
+                    <td>${c.desCorreo != null ? c.desCorreo : ''}</td>
+                    <td>${c.desProvincia || ''}, ${c.desCanton || ''}</td>
+                    <td>${c.desActividadEconomica != null ? c.desActividadEconomica : ''}</td>
+                    <td>
+                        <button class="btn-eliminar-tabla" onclick="eliminarCliente(${c.codCliente})">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- CIERRE DE SESIÓN ---
+        document.getElementById("btnCerrarSesion").addEventListener("click", () => {
+            window.location.href = "http://localhost:8084/facturacion/login.html";
+        });
+    </script>
+</body>
+</html>

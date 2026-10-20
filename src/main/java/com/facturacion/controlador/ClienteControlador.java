@@ -1,74 +1,69 @@
 package com.facturacion.controlador;
 
-import com.facturacion.dto.request.clienteDTORequest;
-import com.facturacion.dto.response.clienteDTOResponse;
-import com.facturacion.entidades.Cliente;
-import com.facturacion.servicio.ClienteServicio;
-
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
-
+import com.facturacion.dto.ClienteDTO;
+import com.facturacion.servicio.ClienteServicio;
 
 @RestController
-@RequestMapping ("/clientes")
+@CrossOrigin(origins = "*") // Permite peticiones locales
+@RequestMapping("/api/clientes") 
 public class ClienteControlador {
 
     private final ClienteServicio clienteServicio;
-
 
     public ClienteControlador(ClienteServicio clienteServicio) {
         this.clienteServicio = clienteServicio;
     }
 
-    @GetMapping()
-    public ResponseEntity<List<clienteDTOResponse>> getAllClientes() {
-        List<clienteDTOResponse> clientesEncontrado = clienteServicio.findAll();
-
-        return ResponseEntity.ok(clientesEncontrado);
+    @GetMapping
+    public ResponseEntity<List<ClienteDTO>> getAllClientes() {
+        return ResponseEntity.ok(clienteServicio.findAll());
     }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<clienteDTOResponse> getClienteByCodCliente(@PathVariable int id){
-        clienteDTOResponse clienteEncontrado = clienteServicio.findByCodCliente(id);
 
-        if (  clienteEncontrado == null) {
-            // si no fue encontrado
+    @GetMapping("/{id}")
+    public ResponseEntity<ClienteDTO> getClienteByCodCliente(@PathVariable int id) {
+        ClienteDTO clienteEncontrado = clienteServicio.findByCodCliente(id);
+        if (clienteEncontrado == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(clienteEncontrado);
-
     }
 
-    //GUARDAR CON POST
     @PostMapping
-    public ResponseEntity<clienteDTOResponse> createCliente(@RequestBody clienteDTORequest request) {
-        clienteDTOResponse nuevoCliente = clienteServicio.save(request);
+    public ResponseEntity<ClienteDTO> createCliente(@RequestBody ClienteDTO request) {
+        ClienteDTO nuevoCliente = clienteServicio.save(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoCliente);
     }
-    
-     //buscar CON POST
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteDTO> updateCliente(@PathVariable int id, @RequestBody ClienteDTO request) {
+        ClienteDTO clienteActualizado = clienteServicio.actualizar(id, request);
+        if (clienteActualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(clienteActualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCliente(@PathVariable int id) {
+        boolean eliminado = clienteServicio.eliminar(id);
+        if (!eliminado) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/buscar/nombre")
-    public ResponseEntity<List<clienteDTOResponse>> getClientesByNombre(@RequestBody String nombre) {
-       List<clienteDTOResponse> clients = clienteServicio.findByNomCliente(nombre);
-        return ResponseEntity.ok(clients);
+    public ResponseEntity<List<ClienteDTO>> getClientesByNombre(@RequestBody String nombre) {
+        return ResponseEntity.ok(clienteServicio.findByNomCliente(nombre));
     }
 
-     //buscar por estado CON POST
     @PostMapping("/buscar/estado")
-    public ResponseEntity<List<clienteDTOResponse>> getClientesByEstado(@RequestBody String estado) {
-       List<clienteDTOResponse> clients = clienteServicio.findByEstado(estado);
-        return ResponseEntity.ok(clients);
+    public ResponseEntity<List<ClienteDTO>> getClientesByEstado(@RequestBody String estado) {
+        return ResponseEntity.ok(clienteServicio.findByEstado(estado));
     }
-    
-
 }
-
