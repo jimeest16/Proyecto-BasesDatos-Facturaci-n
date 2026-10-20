@@ -422,56 +422,74 @@
 
 
             
-            <div id="modulo-factura" class="modal-contenedor">
-                <div class="modal-header">
-                    <h2>Emisión de Factura Electrónica</h2>
-                    <button class="btn-cerrar-modal" onclick="cerrarModulos()">&times;</button>
-                </div>
-                <form id="formFactura" class="grid-form">
-                    <div class="campo">
-                        <label>ID Cliente</label>
-                        <input type="number" id="fac_cliente_id" placeholder="Código de cliente" required>
-                    </div>
-                    <div class="campo">
-                        <label>Condición de Venta</label>
-                        <select id="fac_condicion">
-                            <option value="Contado">Contado</option>
-                            <option value="Credito">Crédito</option>
-                        </select>
-                    </div>
-                    <div class="campo">
-                        <label>Medio de Pago</label>
-                        <select id="fac_medio_pago">
-                            <option value="Transferencia">Transferencia</option>
-                            <option value="SINPE">SINPE Móvil</option>
-                            <option value="Tarjeta">Tarjeta</option>
-                            <option value="Efectivo">Efectivo</option>
-                        </select>
-                    </div>
-                    <div class="campo">
-                        <label>Moneda</label>
-                        <select id="fac_moneda">
-                            <option value="CRC">CRC (Colones)</option>
-                            <option value="USD">USD (Dólares)</option>
-                        </select>
-                    </div>
-                    <div class="campo">
-                        <label>Producto / Servicio (CABYS)</label>
-                        <select id="fac_producto_cabys" required>
-                            <option value="">-- Seleccionar Item --</option>
-                            <option value="CABYS-001">Venta de Inmueble (IVA 13%)</option>
-                            <option value="CABYS-002">Asesoría Inmobiliaria (IVA 13%)</option>
-                        </select>
-                    </div>
-                    <div class="campo">
-                        <label>Monto Subtotal</label>
-                        <input type="number" step="0.01" id="fac_subtotal" required>
-                    </div>
-                    <button type="submit" class="btn-guardar">Generar y Registrar Factura</button>
-                </form>
-                <p id="msgFactura" class="mensaje-estado"></p>
-            </div>
+<div id="modulo-factura" class="modal-contenedor">
+    <div class="modal-header">
+        <h2>Emisión de Factura Electrónica</h2>
+        <button class="btn-cerrar-modal" onclick="cerrarModulos()">&times;</button>
+    </div>
+    <form id="formFactura" class="grid-form">
+        <div class="campo">
+            <label>Código Cliente (cod_cliente)</label>
+            <input type="number" id="fac_cliente_id" placeholder="ID del cliente" required>
+        </div>
+        <div class="campo">
+            <label>Condición de Venta</label>
+            <select id="fac_condicion">
+                <option value="Contado">Contado</option>
+                <option value="Credito">Crédito</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label>Medio de Pago</label>
+            <select id="fac_medio_pago">
+                <option value="Efectivo">Efectivo</option>
+                <option value="Tarjeta">Tarjeta</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="SINPE Movil">SINPE Móvil</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Otros">Otros</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label>Moneda</label>
+            <select id="fac_moneda" onchange="actualizarTipoCambio()">
+                <option value="CRC">CRC (Colones)</option>
+                <option value="USD">USD (Dólares)</option>
+            </select>
+        </div>
+        <div class="campo">
+            <label>Tipo de Cambio</label>
+            <input type="number" step="0.0001" id="fac_tipo_cambio" value="1.0000" required>
+        </div>
+        <div class="campo">
+            <label>Código Producto/Servicio (cod_producto)</label>
+            <input type="number" id="fac_cod_producto" placeholder="ID del producto" required>
+        </div>
+        <div class="campo">
+            <label>Cantidad</label>
+            <input type="number" step="0.01" id="fac_cantidad" value="1" oninput="calcularTotales()" required>
+        </div>
+        <div class="campo">
+            <label>Precio Unitario / Subtotal</label>
+            <input type="number" step="0.01" id="fac_subtotal" placeholder="0.00" oninput="calcularTotales()" required>
+        </div>
+        <div class="campo full">
+            <label>Observaciones</label>
+            <input type="text" id="fac_observaciones" placeholder="Detalles o notas adicionales de la factura">
+        </div>
 
+        
+        <div class="campo full" style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px;">
+            <p style="font-size: 0.85rem; color: #94a3b8;">
+                Impuestos (13%): <b id="lbl_impuestos" style="color: #38bdf8;">0.00</b> | 
+                Monto Total: <b id="lbl_total" style="color: #4ade80;">0.00</b>
+            </p>
+        </div>
+
+        <button type="submit" class="btn-guardar">Generar y Registrar Factura</button>
+    </form>
+    <p id="msgFactura" class="mensaje-estado"></p>
+</div>
         
 
 
@@ -773,6 +791,88 @@
                 msg.textContent = "Error de conexión al procesar la nota.";
             }
         });
+
+        // Añadir o reemplazar dentro de la etiqueta <script> en digitador.html
+
+function actualizarTipoCambio() {
+    const moneda = document.getElementById("fac_moneda").value;
+    const inputTC = document.getElementById("fac_tipo_cambio");
+    if (moneda === "USD") {
+        inputTC.value = "515.0000";
+    } else {
+        inputTC.value = "1.0000";
+    }
+}
+
+function calcularTotales() {
+    const cantidad = parseFloat(document.getElementById("fac_cantidad").value) || 0;
+    const subtotal = parseFloat(document.getElementById("fac_subtotal").value) || 0;
+    
+    const montoSubtotalCalculado = cantidad * subtotal;
+    const impuestos = montoSubtotalCalculado * 0.13;
+    const total = montoSubtotalCalculado + impuestos;
+
+    document.getElementById("lbl_impuestos").innerText = impuestos.toFixed(2);
+    document.getElementById("lbl_total").innerText = total.toFixed(2);
+}
+
+document.getElementById("formFactura").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const msg = document.getElementById("msgFactura");
+    msg.style.color = "#38bdf8";
+    msg.textContent = "Procesando emisión de la factura...";
+
+    const cantidad = parseFloat(document.getElementById("fac_cantidad").value) || 1;
+    const subtotalUnitario = parseFloat(document.getElementById("fac_subtotal").value) || 0;
+    
+    const subtotalTotal = parseFloat((cantidad * subtotalUnitario).toFixed(2));
+    const totalImpuestos = parseFloat((subtotalTotal * 0.13).toFixed(2));
+    const montoTotal = parseFloat((subtotalTotal + totalImpuestos).toFixed(2));
+
+    const payloadFactura = {
+        codCliente: parseInt(document.getElementById("fac_cliente_id").value),
+        condicionVenta: document.getElementById("fac_condicion").value,
+        medioPago: document.getElementById("fac_medio_pago").value,
+        moneda: document.getElementById("fac_moneda").value,
+        tipoCambio: parseFloat(document.getElementById("fac_tipo_cambio").value),
+        observaciones: document.getElementById("fac_observaciones").value.trim(),
+        subtotal: subtotalTotal,
+        totalImpuestos: totalImpuestos,
+        montoTotal: montoTotal,
+        detalles: [
+            {
+                codProducto: parseInt(document.getElementById("fac_cod_producto").value),
+                cantidad: cantidad,
+                montoLinea: subtotalTotal
+            }
+        ]
+    };
+
+    try {
+        const res = await fetch(API_FACTURAS_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json; charset=UTF-8" },
+            body: JSON.stringify(payloadFactura)
+        });
+
+        if (res.ok || res.status === 201) {
+            const facturaRegistrada = await res.json();
+            msg.style.color = "#4ade80";
+            msg.textContent = `Factura #${facturaRegistrada.numFactura || 'generada'} registrada con éxito en SQL Server.`;
+            e.target.reset();
+            actualizarTipoCambio();
+            calcularTotales();
+        } else {
+            const errText = await res.text();
+            msg.style.color = "#ef4444";
+            msg.textContent = `Error (${res.status}): No se pudo registrar la factura. ${errText}`;
+        }
+    } catch (err) {
+        console.error("Error al emitir factura:", err);
+        msg.style.color = "#ef4444";
+        msg.textContent = "Error de conexión al procesar la factura.";
+    }
+});
 
         // Cierre de Sesión
         document.getElementById("btnCerrarSesion").addEventListener("click", () => {
