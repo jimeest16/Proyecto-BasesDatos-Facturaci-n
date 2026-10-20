@@ -311,7 +311,10 @@
                 </div>
             </div>
 
-            <!-- BÚSQUEDA DE CLIENTES (POR ID O NOMBRE) -->
+            
+
+
+            
             <div id="modulo-busqueda" class="modal-contenedor">
                 <div class="modal-header">
                     <h2>Consulta de Clientes</h2>
@@ -352,7 +355,10 @@
                 </div>
             </div>
 
-            <!-- FORMULARIO DE CLIENTES -->
+           
+
+
+
             <div id="modulo-cliente" class="modal-contenedor">
                 <div class="modal-header">
                     <h2>Registrar Nuevo Cliente</h2>
@@ -412,7 +418,10 @@
                 <p id="msgCliente" class="mensaje-estado"></p>
             </div>
 
-            <!-- FORMULARIO DE FACTURAS -->
+          
+
+
+            
             <div id="modulo-factura" class="modal-contenedor">
                 <div class="modal-header">
                     <h2>Emisión de Factura Electrónica</h2>
@@ -463,7 +472,9 @@
                 <p id="msgFactura" class="mensaje-estado"></p>
             </div>
 
-            <!-- FORMULARIO DE NOTAS -->
+        
+
+
             <div id="modulo-nota" class="modal-contenedor">
                 <div class="modal-header">
                     <h2>Notas de Crédito / Débito</h2>
@@ -493,10 +504,12 @@
     </div>
 
     <script>
-        // URL Base con el puerto (8084) y el context-path (/facturacion) configurados en application.properties
+        // ENDPOINTS 
         const API_CLIENTES_URL = "http://localhost:8084/facturacion/api/clientes";
+        const API_FACTURAS_URL = "http://localhost:8084/facturacion/api/facturas";
+        const API_NOTAS_URL = "http://localhost:8084/facturacion/api/notas";
 
-        // --- CONTROL DE VISTAS Y MÓDULOS ---
+        // CONTROL DE NAVEGACIÓN DE PANELES
         function abrirModulo(modulo) {
             cerrarModulos();
             document.getElementById(`modulo-${modulo}`).style.display = 'block';
@@ -509,9 +522,9 @@
             document.querySelectorAll('.modal-contenedor').forEach(m => m.style.display = 'none');
         }
 
-        // --- MÉTODOS DEL CLIENTECONTROLADOR ---
+       
 
-        // 1. GET /facturacion/api/clientes -> getAllClientes()
+        // Consulta  de Clientes
         async function obtenerTodosLosClientes() {
             const cuerpo = document.getElementById("cuerpoTablaClientes");
             cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">Cargando lista de clientes...</td></tr>`;
@@ -528,7 +541,7 @@
             }
         }
 
-        // 2. BÚSQUEDA POR ID O POR NOMBRE
+        // Búsqueda por ID o por Nombre
         async function ejecutarBusquedaCliente() {
             const tipo = document.getElementById("tipo_busqueda").value;
             const criterio = document.getElementById("buscar_criterio").value.trim();
@@ -545,7 +558,6 @@
                 let clientes = [];
 
                 if (tipo === "id") {
-                    // GET /facturacion/api/clientes/{id} -> getClienteByCodCliente(@PathVariable int id)
                     const res = await fetch(`${API_CLIENTES_URL}/${encodeURIComponent(criterio)}`);
                     
                     if (res.status === 404) {
@@ -559,7 +571,6 @@
                     if (cliente) clientes = [cliente];
 
                 } else {
-                    // POST /facturacion/api/clientes/buscar/nombre -> getClientesByNombre(@RequestBody String nombre)
                     const res = await fetch(`${API_CLIENTES_URL}/buscar/nombre`, {
                         method: "POST",
                         headers: { "Content-Type": "text/plain; charset=UTF-8" },
@@ -578,7 +589,7 @@
             }
         }
 
-        // 3. POST /facturacion/api/clientes -> createCliente(@RequestBody ClienteDTO request)
+        // Registro de Nuevo Cliente
         document.getElementById("formCliente").addEventListener("submit", async (e) => {
             e.preventDefault();
             const msg = document.getElementById("msgCliente");
@@ -602,23 +613,23 @@
             try {
                 const res = await fetch(API_CLIENTES_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json; charset=UTF-8" },
                     body: JSON.stringify(payload)
                 });
 
                 if (res.status === 201 || res.ok) {
                     const clienteGuardado = await res.json();
                     msg.style.color = "#4ade80";
-                    msg.textContent = `Cliente "${clienteGuardado.nomCliente || ''}" registrado con éxito.`;
+                    msg.textContent = `Cliente "${clienteGuardado.nomCliente || payload.nomCliente}" registrado e insertado con éxito.`;
                     e.target.reset();
                     
-                    // Refresca la tabla automáticamente tras guardar
                     setTimeout(() => {
                         abrirModulo('busqueda');
-                    }, 1000);
+                    }, 1200);
                 } else {
+                    const errText = await res.text();
                     msg.style.color = "#ef4444";
-                    msg.textContent = `Error (${res.status}): El servidor rechazó el registro.`;
+                    msg.textContent = `Error (${res.status}): El servidor rechazó el registro. ${errText}`;
                 }
             } catch (err) {
                 console.error("Error al guardar cliente:", err);
@@ -627,7 +638,7 @@
             }
         });
 
-        // 4. DELETE /facturacion/api/clientes/{id} -> deleteCliente(@PathVariable int id)
+        // Eliminar Cliente
         async function eliminarCliente(id) {
             if (!confirm(`¿Desea eliminar al cliente con ID ${id}?`)) return;
 
@@ -650,7 +661,6 @@
             }
         }
 
-        // RENDERIZADO DE TABLA
         function renderizarTablaClientes(clientes) {
             const cuerpo = document.getElementById("cuerpoTablaClientes");
 
@@ -676,7 +686,95 @@
             `).join('');
         }
 
-        // --- CIERRE DE SESIÓN ---
+ 
+
+
+        document.getElementById("formFactura").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("msgFactura");
+            msg.style.color = "#38bdf8";
+            msg.textContent = "Procesando emisión de factura...";
+
+            const subtotal = parseFloat(document.getElementById("fac_subtotal").value) || 0;
+            const totalImpuestos = parseFloat((subtotal * 0.13).toFixed(2));
+            const montoTotal = parseFloat((subtotal + totalImpuestos).toFixed(2));
+            const monedaSel = document.getElementById("fac_moneda").value;
+
+            const payloadFactura = {
+                codCliente: parseInt(document.getElementById("fac_cliente_id").value),
+                condicionVenta: document.getElementById("fac_condicion").value,
+                medioPago: document.getElementById("fac_medio_pago").value,
+                moneda: monedaSel,
+                tipoCambio: monedaSel === 'USD' ? 515.00 : 1.00,
+                observaciones: `CABYS: ${document.getElementById("fac_producto_cabys").value}`,
+                subtotal: subtotal,
+                totalImpuestos: totalImpuestos,
+                montoTotal: montoTotal
+            };
+
+            try {
+                const res = await fetch(API_FACTURAS_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json; charset=UTF-8" },
+                    body: JSON.stringify(payloadFactura)
+                });
+
+                if (res.ok || res.status === 201) {
+                    const facturaRegistrada = await res.json();
+                    msg.style.color = "#4ade80";
+                    msg.textContent = `Factura #${facturaRegistrada.numFactura || facturaRegistrada.num_factura || 'generada'} emitiada con éxito. Total: ${monedaSel} ${montoTotal}`;
+                    e.target.reset();
+                } else {
+                    const errText = await res.text();
+                    msg.style.color = "#ef4444";
+                    msg.textContent = `Error (${res.status}): No se pudo registrar la factura. ${errText}`;
+                }
+            } catch (err) {
+                console.error("Error al emitir factura:", err);
+                msg.style.color = "#ef4444";
+                msg.textContent = "Error de conexión con el servidor backend (8084).";
+            }
+        });
+
+
+
+
+        document.getElementById("formNota").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("msgNota");
+            msg.style.color = "#38bdf8";
+            msg.textContent = "Registrando nota en la base de datos...";
+
+            const payloadNota = {
+                numFactura: parseInt(document.getElementById("nota_factura_id").value),
+                indTipo: document.getElementById("nota_tipo").value,
+                desMotivo: document.getElementById("nota_motivo").value.trim()
+            };
+
+            try {
+                const res = await fetch(API_NOTAS_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json; charset=UTF-8" },
+                    body: JSON.stringify(payloadNota)
+                });
+
+                if (res.ok || res.status === 201) {
+                    msg.style.color = "#4ade80";
+                    msg.textContent = `Nota de ${payloadNota.indTipo} aplicada a la Factura #${payloadNota.numFactura} con éxito.`;
+                    e.target.reset();
+                } else {
+                    const errText = await res.text();
+                    msg.style.color = "#ef4444";
+                    msg.textContent = `Error (${res.status}): No se pudo procesar la nota. ${errText}`;
+                }
+            } catch (err) {
+                console.error("Error al aplicar la nota:", err);
+                msg.style.color = "#ef4444";
+                msg.textContent = "Error de conexión al procesar la nota.";
+            }
+        });
+
+        // Cierre de Sesión
         document.getElementById("btnCerrarSesion").addEventListener("click", () => {
             window.location.href = "http://localhost:8084/facturacion/login.html";
         });

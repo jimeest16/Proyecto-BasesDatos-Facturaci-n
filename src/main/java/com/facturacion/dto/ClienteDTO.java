@@ -19,8 +19,7 @@ public class ClienteDTO {
     private LocalDateTime fecRegistro;
     private String indEstado;
 
-    // Constructores...
-
+   
   
     public Integer getCodCliente() { return codCliente; }
     public ClienteDTO(Integer codCliente, String nomCliente, String tipIdentificacion, String numIdentificacion,
@@ -32,7 +31,7 @@ public class ClienteDTO {
         this.codCliente = codCliente;
         this.nomCliente = nomCliente;
         this.tipIdentificacion = tipIdentificacion;
-        this.numIdentificacion = numIdentificacion;
+        this.numIdentificacion = numIdentificacion; // esto se recibe como texto desde el front al igual que num de telefono 
         this.numTelefono = numTelefono;
         this.desCorreo = desCorreo;
         this.desProvincia = desProvincia;

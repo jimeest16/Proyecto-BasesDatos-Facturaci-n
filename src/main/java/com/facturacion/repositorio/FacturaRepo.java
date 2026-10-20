@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public interface FacturaRepo extends JpaRepository<Factura, Integer> {
     Factura findByNumFactura(Integer numFactura);
 
-    // Invocación explícita del Stored Procedure requerido por el REQ 002
+    // Invocación  del Stored Procedure requerido por el REQ 002
     @Procedure(procedureName = "dbo.sp_InsertarFactura")
     Integer spInsertarFactura(
         @Param("cod_cliente") Integer codCliente,

@@ -1,7 +1,6 @@
 package com.facturacion.servicio;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -55,26 +54,29 @@ public class ClienteServicio {
     }
 
  
-    public ClienteDTO save(ClienteDTO request) {
-        Integer idGenerado = clienteRepo.insertarCliente(
-            request.getNomCliente(),
-            request.getTipIdentificacion(),
-            request.getNumIdentificacion(),
-            request.getNumTelefono(),
-            request.getDesCorreo(),
-            request.getDesProvincia(),
-            request.getDesCanton(),
-            request.getDesDistrito(),
-            request.getDesBarrio(),
-            request.getDesProfesion(),
-            request.getDesActividadEconomica()
-        );
+ public ClienteDTO save(ClienteDTO request) {
+    Integer idGenerado = clienteRepo.insertarCliente(
+        request.getNomCliente(),
+        request.getTipIdentificacion(),
+        request.getNumIdentificacion(),
+        request.getNumTelefono(),
+        request.getDesCorreo(),
+        request.getDesProvincia(),
+        request.getDesCanton(),
+        request.getDesDistrito(),
+        request.getDesBarrio() != null ? request.getDesBarrio() : "",
+        request.getDesProfesion(),
+        request.getDesActividadEconomica()
+    );
 
-        // Recuperar y devolver el cliente recién guardado
-        return findByCodCliente(idGenerado);
+    if (idGenerado == null) {
+
+        List<ClienteDTO> encontrados = findByNomCliente(request.getNomCliente());
+        return encontrados.isEmpty() ? request : encontrados.get(encontrados.size() - 1);
     }
 
-   
+    return findByCodCliente(idGenerado);
+}
     public ClienteDTO actualizar(int id, ClienteDTO request) {
         List<Cliente> optCliente = (List<Cliente>) clienteRepo.findByCodCliente(id);
         if (optCliente.isEmpty()) {

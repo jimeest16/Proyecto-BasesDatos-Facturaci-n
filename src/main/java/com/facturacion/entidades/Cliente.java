@@ -59,7 +59,7 @@ public class Cliente {
     @Column(name = "ind_estado", nullable = false, length = 1)
     private String indEstado = "A";
 
-    // IMPORTANTE LOS CONTRUCTORES, GETTERS Y SETTERS PARA QUE FUNCIONE EL JPA
+  
     public Cliente() {
     }
 
