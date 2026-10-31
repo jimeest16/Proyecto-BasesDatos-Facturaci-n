@@ -6,7 +6,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.sql.CallableStatement;
+import java.sql.Types;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -63,6 +64,38 @@ public class AuthService {
             );
 
             return null;
+        }
+    }
+
+        // REQ 003: registra el ingreso en BitacoraSesiones y devuelve el código de la sesión.
+    public Integer registrarInicioSesion(String usuario, String contrasena,
+                                         String terminal, String ip) {
+        try (Connection conexion = DriverManager.getConnection(url, usuario, contrasena);
+             CallableStatement cs = conexion.prepareCall(
+                 "{call dbo.sp_RegistrarInicioSesion(?, ?, ?, ?)}")) {
+            cs.setString(1, usuario);
+            cs.setString(2, terminal);
+            cs.setString(3, ip);
+            cs.registerOutParameter(4, Types.INTEGER);   
+            cs.execute();
+            return cs.getInt(4);
+        } catch (SQLException e) {
+            System.err.println("No se pudo registrar el inicio de sesión. Código: " + e.getErrorCode());
+            return null;
+        }
+    }
+
+    // Registra la fecha y hora de salida de esa sesión.
+    public void registrarSalidaSesion(String usuario, String contrasena, Integer codSesion) {
+        if (codSesion == null) {
+            return;
+        }
+        try (Connection conexion = DriverManager.getConnection(url, usuario, contrasena);
+             CallableStatement cs = conexion.prepareCall("{call dbo.sp_RegistrarSalidaSesion(?)}")) {
+            cs.setInt(1, codSesion);
+            cs.execute();
+        } catch (SQLException e) {
+            System.err.println("No se pudo registrar la salida de sesión. Código: " + e.getErrorCode());
         }
     }
 }

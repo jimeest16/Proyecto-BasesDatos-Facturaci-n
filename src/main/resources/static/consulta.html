@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuario Consulta - Propi Facturación</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#f4f3f0;--panel:#fcfbf9;--side:#ebe7e0;--head:#2d2b2a;--body:#57534e;--terra:#dd6b53;--sage:#5b8a72;--lav:#8b78a5;--line:#d6d1c4}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Outfit','Segoe UI',sans-serif;background:var(--bg);color:var(--body);min-height:100vh;padding:20px}
+        .app{display:flex;max-width:1280px;margin:0 auto;min-height:calc(100vh - 40px);background:var(--panel);border:1.5px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 12px 32px rgba(45,43,42,.06)}
+        .side{width:250px;flex-shrink:0;background:var(--side);border-right:1.5px solid var(--line);padding:26px 14px;display:flex;flex-direction:column;justify-content:space-between}
+        .marca{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;color:var(--head);display:flex;align-items:center;gap:8px;padding:0 8px}
+        .dot{width:11px;height:11px;border-radius:50%;background:var(--terra);display:inline-block}
+        .perfil{font-size:.78rem;padding:6px 8px 18px;color:var(--body)}
+        .side button,.side a.nav{display:block;width:100%;text-align:left;text-decoration:none;font:600 .85rem 'Outfit',sans-serif;color:var(--head);background:transparent;border:1.5px solid transparent;border-radius:12px;padding:12px 14px;margin-bottom:6px;cursor:pointer}
+        .side button:hover,.side a.nav:hover{background:#f5f2ec}
+        .side button.activo{background:#fff;border-color:var(--line);color:var(--terra)}
+        .side .sep{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding:14px 8px 6px;color:#a8a29e;font-weight:700}
+        .side button.salir{background:#f6e4e0;color:var(--terra);text-align:center;margin:0}
+        .main{flex:1;min-width:0;padding:30px 32px}
+        .main h2{font-family:'Space Grotesk',sans-serif;color:var(--head);font-size:1.35rem;padding-bottom:14px;border-bottom:1px dashed var(--line);margin-bottom:22px}
+        .filtros{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-bottom:14px}
+        .filtros label{display:flex;flex-direction:column;gap:5px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--head)}
+        .filtros input,.filtros select{padding:10px 12px;min-width:170px;background:#f5f4f0;border:1.5px solid var(--line);border-radius:10px;font:.9rem 'Outfit',sans-serif;color:var(--head);outline:none}
+        .filtros input:focus,.filtros select:focus{border-color:var(--lav);background:#fff}
+        .filtros .generar{width:auto;margin:0;padding:11px 22px;background:var(--head);color:#fcfbf9;border:0;border-radius:12px;font:700 .88rem 'Space Grotesk',sans-serif;cursor:pointer}
+        .filtros .generar:hover{background:var(--sage)}
+        .estado{min-height:1.4em;font:700 .85rem 'Space Grotesk',sans-serif;color:var(--lav);margin-bottom:10px}
+        .estado.error{color:var(--terra)}
+        .tabla-wrap{overflow:auto;max-height:60vh;border:1.5px solid var(--line);border-radius:14px}
+        table{border-collapse:collapse;width:100%;font-size:.84rem}
+        th{position:sticky;top:0;background:#f5f2ec;color:var(--head);text-align:left;padding:11px 12px;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1.5px solid var(--line)}
+        td{padding:10px 12px;border-bottom:1px solid #eee9de;vertical-align:top;max-width:420px;word-break:break-word}
+        tr:hover td{background:#faf8f3}
+        @media(max-width:800px){.app{flex-direction:column}.side{width:100%}}
+    </style>
+</head>
+<body data-rol="Rol_Consulta">
+    <div class="app">
+        <aside class="side">
+            <div>
+                <h1 class="marca"><span class="dot"></span> Propi Facturación</h1>
+                <p class="perfil" id="perfil">Usuario Consulta</p>
+                <div class="sep">Reportes</div>
+                <nav id="menu"></nav>
+            </div>
+            <button type="button" class="salir" id="btnSalir">Cerrar sesión</button>
+        </aside>
+        <main class="main">
+            <h2 id="titulo"></h2>
+            <form id="filtros" class="filtros"></form>
+            <p id="estado" class="estado" role="status"></p>
+            <div class="tabla-wrap">
+                <table><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+            </div>
+        </main>
+    </div>
+    <script>
+        (function () {
+          const BASE = "/facturacion";
+          const ROL_PAGINA = document.body.dataset.rol;
+
+          const REPORTES = {
+            clientes:  { nombre: "Clientes Resumido",        titulo: "Reporte de Clientes Resumido",           campos: ["desde", "hasta", "estado"] },
+            facturas:  { nombre: "Facturas",                 titulo: "Reporte de Facturas",                    campos: ["desde", "hasta"] },
+            auditoria: { nombre: "Pistas de Auditoría",      titulo: "Reporte de Pistas de Auditoría",         campos: ["desde", "hasta", "usuario"] },
+            seguridad: { nombre: "Configuración de Seguridad", titulo: "Reporte de Configuración de Seguridad", campos: ["usuario"] }
+          };
+          const CAMPOS = {
+            desde:   { label: "Fecha desde", tipo: "date" },
+            hasta:   { label: "Fecha hasta", tipo: "date" },
+            estado:  { label: "Estado", tipo: "select", opciones: [["T", "Todos"], ["A", "Activo"], ["I", "Inactivo"]] },
+            usuario: { label: "Usuario (vacío = todos)", tipo: "text" }
+          };
+
+          const $ = (id) => document.getElementById(id);
+          let reporteActual = null;
+
+          function fechaLocal(d) {
+            const p = (n) => String(n).padStart(2, "0");
+            return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+          }
+
+          async function validarSesion() {
+            try {
+              const r = await fetch(BASE + "/api/auth/sesion");
+              if (!r.ok) throw new Error("sin sesion");
+              const s = await r.json();
+              if (s.rol !== ROL_PAGINA) throw new Error("rol distinto");
+              $("perfil").textContent = s.usuario + " · " + s.rol.replace("Rol_", "");
+              return true;
+            } catch (e) {
+              window.location.href = BASE + "/login.html";
+              return false;
+            }
+          }
+
+          function construirMenu() {
+            const menu = $("menu");
+            Object.keys(REPORTES).forEach((clave) => {
+              const b = document.createElement("button");
+              b.type = "button";
+              b.id = "btn-" + clave;
+              b.textContent = REPORTES[clave].nombre;
+              b.addEventListener("click", () => seleccionar(clave));
+              menu.appendChild(b);
+            });
+          }
+
+          function seleccionar(clave) {
+            reporteActual = clave;
+            document.querySelectorAll("#menu button").forEach((b) => b.classList.remove("activo"));
+            $("btn-" + clave).classList.add("activo");
+            $("titulo").textContent = REPORTES[clave].titulo;
+            $("thead").replaceChildren();
+            $("tbody").replaceChildren();
+            mensaje("Elija los filtros y presione “Generar reporte”.", false);
+
+            const form = $("filtros");
+            form.replaceChildren();
+            REPORTES[clave].campos.forEach((nombre) => {
+              const def = CAMPOS[nombre];
+              const label = document.createElement("label");
+              label.textContent = def.label;
+              let input;
+              if (def.tipo === "select") {
+                input = document.createElement("select");
+                def.opciones.forEach(([v, t]) => {
+                  const o = document.createElement("option");
+                  o.value = v; o.textContent = t; input.appendChild(o);
+                });
+              } else {
+                input = document.createElement("input");
+                input.type = def.tipo;
+                if (nombre === "desde") input.value = new Date().getFullYear() + "-01-01";
+                if (nombre === "hasta") input.value = fechaLocal(new Date());
+              }
+              input.name = nombre;
+              label.appendChild(input);
+              form.appendChild(label);
+            });
+            const gen = document.createElement("button");
+            gen.type = "submit"; gen.className = "generar"; gen.textContent = "Generar reporte";
+            form.appendChild(gen);
+          }
+
+          function mensaje(texto, esError) {
+            const e = $("estado");
+            e.textContent = texto;
+            e.className = "estado" + (esError ? " error" : "");
+          }
+
+          async function generar(ev) {
+            ev.preventDefault();
+            const params = new URLSearchParams();
+            new FormData($("filtros")).forEach((v, k) => { if (String(v).trim() !== "") params.append(k, v); });
+            mensaje("Generando reporte...", false);
+            $("thead").replaceChildren();
+            $("tbody").replaceChildren();
+            try {
+              const r = await fetch(BASE + "/api/reportes/" + reporteActual + "?" + params.toString());
+              if (r.status === 401) { window.location.href = BASE + "/login.html"; return; }
+              const datos = await r.json();
+              if (!r.ok) { mensaje(datos.mensaje || "No se pudo generar el reporte.", true); return; }
+              dibujar(datos);
+            } catch (e) {
+              mensaje("No se pudo conectar con el servidor.", true);
+            }
+          }
+
+          function titulo(clave) {
+            const t = clave.replace(/_/g, " ");
+            return t.charAt(0).toUpperCase() + t.slice(1);
+          }
+
+          // textContent (no innerHTML): los datos de la bitácora no pueden inyectar HTML.
+          function dibujar(filas) {
+            if (!filas.length) { mensaje("Sin resultados para los filtros indicados.", false); return; }
+            const columnas = Object.keys(filas[0]);
+            const tr = document.createElement("tr");
+            columnas.forEach((c) => { const th = document.createElement("th"); th.textContent = titulo(c); tr.appendChild(th); });
+            $("thead").appendChild(tr);
+            const frag = document.createDocumentFragment();
+            filas.forEach((f) => {
+              const row = document.createElement("tr");
+              columnas.forEach((c) => { const td = document.createElement("td"); td.textContent = f[c] == null ? "" : f[c]; row.appendChild(td); });
+              frag.appendChild(row);
+            });
+            $("tbody").appendChild(frag);
+            mensaje(filas.length + " registro(s).", false);
+          }
+
+          async function salir() {
+            try { await fetch(BASE + "/api/auth/logout", { method: "POST" }); } catch (e) { /* se ignora */ }
+            window.location.href = BASE + "/login.html";
+          }
+
+          validarSesion().then((ok) => {
+            if (!ok) return;
+            construirMenu();
+            $("filtros").addEventListener("submit", generar);
+            $("btnSalir").addEventListener("click", salir);
+            seleccionar("clientes");
+          });
+        })();
+    </script>
+</body>
+</html>

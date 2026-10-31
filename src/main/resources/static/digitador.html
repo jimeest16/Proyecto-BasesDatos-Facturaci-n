@@ -935,9 +935,10 @@
         });
 
         // Cierre de Sesión
-        document.getElementById("btnCerrarSesion").addEventListener("click", () => {
-            window.location.href = "http://localhost:8084/facturacion/login.html";
-        });
+        document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
+        try { await fetch("/facturacion/api/auth/logout", { method: "POST" }); } catch (e) { }
+        window.location.href = "/facturacion/login.html";
+    });
     </script>
 </body>
 </html>
