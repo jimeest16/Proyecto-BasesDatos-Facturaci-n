@@ -31,7 +31,10 @@
 
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-canvas);
+            background:
+                radial-gradient(circle at 8% 12%, rgba(221, 107, 83, 0.1), transparent 28%),
+                radial-gradient(circle at 92% 88%, rgba(91, 138, 114, 0.1), transparent 30%),
+                var(--bg-canvas);
             color: var(--text-body);
             min-height: 100vh;
             display: flex;
@@ -45,30 +48,42 @@
             display: flex;
             width: 100%;
             max-width: 1380px;
-            height: 88vh;
+            height: min(900px, 92vh);
             margin: 0 auto;
             background: var(--panel-bg);
             border: 1.5px solid var(--border-soft);
             border-radius: 20px;
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 18px 45px rgba(45, 43, 42, 0.08);
             overflow: hidden;
         }
 
         /* BARRA LATERAL COMPACTA */
         aside.sidebar {
             width: 240px;
-            background: var(--sidebar-bg);
+            background: linear-gradient(180deg, var(--sidebar-bg), #e6e2d9);
             padding: 20px 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             border-right: 1.5px solid var(--border-soft);
             flex-shrink: 0;
+            position: relative;
+        }
+
+        aside.sidebar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: -1.5px;
+            width: 3px;
+            height: 86px;
+            background: var(--accent-terracotta);
+            border-radius: 0 0 4px 4px;
         }
 
         .brand-box {
             padding-bottom: 16px;
-            border-bottom: 1.5px stroke var(--border-soft);
+            border-bottom: 1.5px solid var(--border-soft);
         }
 
         .brand-box h1 {
@@ -77,17 +92,13 @@
             font-weight: 700;
             color: var(--text-heading);
             letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .brand-badge {
-            width: 10px;
-            height: 10px;
-            background: var(--accent-terracotta);
-            border-radius: 50%;
-            display: inline-block;
+        .brand-context {
+            margin-top: 5px;
+            color: var(--text-body);
+            font-size: 0.72rem;
+            line-height: 1.4;
         }
 
         .nav-menu {
@@ -111,6 +122,7 @@
             cursor: pointer;
             text-align: left;
             transition: all 0.2s ease;
+            box-shadow: inset 0 0 0 0 var(--accent-terracotta);
         }
 
         .nav-item:hover {
@@ -122,7 +134,7 @@
             background: #ffffff;
             border-color: var(--border-soft);
             color: var(--accent-terracotta);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 4px 12px rgba(45, 43, 42, 0.06);
         }
 
         .btn-salir {
@@ -148,7 +160,7 @@
         main.main-content {
             flex-grow: 1;
             padding: 24px 30px;
-            background: var(--panel-bg);
+            background: linear-gradient(135deg, #fcfbf9 0%, #f8f6f1 100%);
             overflow-y: auto;
         }
 
@@ -164,8 +176,8 @@
 
         .panel-header {
             margin-bottom: 18px;
-            padding-bottom: 10px;
-            border-bottom: 1.5px dashed var(--border-soft);
+            padding: 4px 0 12px;
+            border-bottom: 1.5px solid var(--border-soft);
         }
 
         .panel-header h2 {
@@ -173,6 +185,19 @@
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--text-heading);
+            padding-left: 12px;
+            position: relative;
+        }
+
+        .panel-header h2::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 4px;
+            height: 22px;
+            background: var(--accent-terracotta);
+            border-radius: 4px;
         }
 
         /* FORMULARIOS Y CAMPOS DE ENTRADA COMPACTOS */
@@ -180,6 +205,11 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px 18px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.68);
+            border: 1px solid rgba(214, 209, 196, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(45, 43, 42, 0.035);
         }
 
         .campo {
@@ -216,6 +246,7 @@
             background: #ffffff;
             border-color: var(--accent-lavender);
             box-shadow: 0 0 0 3px rgba(139, 120, 165, 0.12);
+            transform: translateY(-1px);
         }
 
         .btn-guardar {
@@ -238,11 +269,20 @@
             box-shadow: 0 4px 14px rgba(91, 138, 114, 0.2);
         }
 
+        .btn-guardar:active {
+            transform: translateY(1px);
+        }
+
         /* TABLA Y PÁGINA DE NAVEGACIÓN DE CLIENTES */
         .barra-busqueda {
             display: flex;
             gap: 10px;
             margin-bottom: 16px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid var(--border-soft);
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(45, 43, 42, 0.035);
         }
 
         .tabla-resultados {
@@ -250,21 +290,31 @@
             border-collapse: separate;
             border-spacing: 0 6px;
             font-size: 0.82rem;
+            background: #ffffff;
+            border: 1px solid var(--border-soft);
+            border-radius: 14px;
+            overflow: hidden;
         }
 
         .tabla-resultados th {
             padding: 8px 12px;
-            color: var(--text-heading);
+            color: #ffffff;
+            background: var(--text-heading);
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
             text-align: left;
-            border-bottom: 1.5px solid var(--border-soft);
+            border-bottom: 1.5px solid var(--text-heading);
         }
 
         .tabla-resultados td {
             padding: 10px 12px;
             background: #f7f6f2;
             color: var(--text-body);
+            border-bottom: 1px solid #ebe7de;
+        }
+
+        .tabla-resultados tbody tr:hover td {
+            background: #fffaf5;
         }
 
         .tabla-resultados tbody tr td:first-child {
@@ -278,29 +328,13 @@
             border-bottom-right-radius: 8px;
         }
 
-        .btn-eliminar-tabla {
-            padding: 4px 10px;
-            background: #fbebe8;
-            color: var(--accent-terracotta);
-            border: 1px solid #f3c2b8;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.72rem;
-        }
-
-        .btn-eliminar-tabla:hover {
-            background: var(--accent-terracotta);
-            color: #ffffff;
-        }
-
         /* BARRA DE PAGINACIÓN */
         .paginacion-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-top: 16px;
-            padding-top: 12px;
+            padding: 12px 4px 0;
             border-top: 1.5px solid var(--border-soft);
             font-family: 'Space Grotesk', sans-serif;
             font-size: 0.82rem;
@@ -329,6 +363,10 @@
             cursor: not-allowed;
         }
 
+        .btn-pagina:not(:disabled):active {
+            transform: translateY(1px);
+        }
+
         .mensaje-estado {
             margin-top: 12px;
             text-align: center;
@@ -354,6 +392,13 @@
             .campo.full, .btn-guardar {
                 grid-column: span 1;
             }
+            .barra-busqueda {
+                flex-wrap: wrap;
+            }
+            .barra-busqueda select,
+            .barra-busqueda input {
+                min-width: 100%;
+            }
         }
     </style>
 </head>
@@ -365,7 +410,8 @@
         <aside class="sidebar">
             <div>
                 <div class="brand-box">
-                    <h1><span class="brand-badge"></span> Propi Facturación</h1>
+                    <h1>Propi Facturación</h1>
+                    <p class="brand-context">Facturación electrónica · Costa Rica</p>
                 </div>
                 <nav class="nav-menu">
                     <button class="nav-item active" id="btn-nav-busqueda" onclick="abrirModulo('busqueda')">
@@ -383,7 +429,10 @@
                 </nav>
             </div>
             <div>
-                <button class="btn-salir" id="btnCerrarSesion">Cerrar sesión</button>
+                <button type="button" class="btn-salir" id="btnCerrarSesion"
+                    onclick="fetch('/facturacion/api/auth/logout', { method: 'POST', keepalive: true }).catch(() => {}); window.location.replace('/facturacion/login.html');">
+                    Cerrar sesión
+                </button>
             </div>
         </aside>
 
@@ -418,12 +467,11 @@
                                 <th>Correo</th>
                                 <th>Ubicación</th>
                                 <th>Actividad</th>
-                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody id="cuerpoTablaClientes">
                             <tr>
-                                <td colspan="9" style="text-align: center; color: var(--text-body);">Selecciona un criterio y presiona "Buscar" o "Ver Todos".</td>
+                                <td colspan="8" style="text-align: center; color: var(--text-body);">Selecciona un criterio y presiona "Buscar" o "Ver Todos".</td>
                             </tr>
                         </tbody>
                     </table>
@@ -620,7 +668,7 @@
         // Consulta de Clientes
         async function obtenerTodosLosClientes() {
             const cuerpo = document.getElementById("cuerpoTablaClientes");
-            cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">Cargando lista de clientes...</td></tr>`;
+            cuerpo.innerHTML = `<tr><td colspan="8" style="text-align: center;">Cargando lista de clientes...</td></tr>`;
 
             try {
                 const res = await fetch(API_CLIENTES_URL);
@@ -631,7 +679,7 @@
                 renderizarTablaClientesConPaginacion();
             } catch (err) {
                 console.error("Error al obtener clientes:", err);
-                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--accent-terracotta);">No se pudieron cargar los registros. (${err.message})</td></tr>`;
+                cuerpo.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--accent-terracotta);">No se pudieron cargar los registros. (${err.message})</td></tr>`;
                 actualizarEstadoPaginacion(0);
             }
         }
@@ -647,7 +695,7 @@
                 return;
             }
 
-            cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">Buscando...</td></tr>`;
+            cuerpo.innerHTML = `<tr><td colspan="8" style="text-align: center;">Buscando...</td></tr>`;
 
             try {
                 listaClientesCompleta = [];
@@ -656,7 +704,7 @@
                     const res = await fetch(`${API_CLIENTES_URL}/${encodeURIComponent(criterio)}`);
                     
                     if (res.status === 404) {
-                        cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--accent-terracotta);">No existe el cliente con ID: ${criterio}</td></tr>`;
+                        cuerpo.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--accent-terracotta);">No existe el cliente con ID: ${criterio}</td></tr>`;
                         actualizarEstadoPaginacion(0);
                         return;
                     }
@@ -682,7 +730,7 @@
 
             } catch (err) {
                 console.error("Error al realizar la consulta:", err);
-                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--accent-terracotta);">Error al consultar el servidor. (${err.message})</td></tr>`;
+                cuerpo.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--accent-terracotta);">Error al consultar el servidor. (${err.message})</td></tr>`;
                 actualizarEstadoPaginacion(0);
             }
         }
@@ -692,7 +740,7 @@
             const cuerpo = document.getElementById("cuerpoTablaClientes");
 
             if (!listaClientesCompleta || listaClientesCompleta.length === 0) {
-                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align: center;">No hay clientes para mostrar.</td></tr>`;
+                cuerpo.innerHTML = `<tr><td colspan="8" style="text-align: center;">No hay clientes para mostrar.</td></tr>`;
                 actualizarEstadoPaginacion(0);
                 return;
             }
@@ -715,9 +763,6 @@
                     <td>${c.desCorreo != null ? c.desCorreo : ''}</td>
                     <td>${c.desProvincia || ''}, ${c.desCanton || ''}</td>
                     <td>${c.desActividadEconomica != null ? c.desActividadEconomica : ''}</td>
-                    <td>
-                        <button class="btn-eliminar-tabla" onclick="eliminarCliente(${c.codCliente})">Eliminar</button>
-                    </td>
                 </tr>
             `).join('');
 
@@ -793,29 +838,6 @@
                 msg.textContent = "Error de conexión al intentar guardar el cliente.";
             }
         });
-
-        // Eliminar Cliente
-        async function eliminarCliente(id) {
-            if (!confirm(`¿Desea eliminar al cliente con ID ${id}?`)) return;
-
-            try {
-                const res = await fetch(`${API_CLIENTES_URL}/${id}`, {
-                    method: "DELETE"
-                });
-
-                if (res.ok || res.status === 204) {
-                    alert("Cliente eliminado con éxito.");
-                    obtenerTodosLosClientes();
-                } else if (res.status === 404) {
-                    alert("El cliente no fue encontrado.");
-                } else {
-                    alert(`Error al eliminar (${res.status}).`);
-                }
-            } catch (err) {
-                console.error("Error al eliminar cliente:", err);
-                alert("Error de conexión al intentar eliminar.");
-            }
-        }
 
         // LÓGICA DE NOTAS
         document.getElementById("formNota").addEventListener("submit", async (e) => {
@@ -934,11 +956,6 @@
             }
         });
 
-        // Cierre de Sesión
-        document.getElementById("btnCerrarSesion").addEventListener("click", async () => {
-        try { await fetch("/facturacion/api/auth/logout", { method: "POST" }); } catch (e) { }
-        window.location.href = "/facturacion/login.html";
-    });
     </script>
 </body>
 </html>

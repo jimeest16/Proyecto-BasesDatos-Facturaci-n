@@ -9,15 +9,21 @@ import java.sql.SQLException;
 import java.sql.CallableStatement;
 import java.sql.Types;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class AuthService {
 
-    @Value("${spring.datasource.url}")
-    private String url;
+    public record ResultadoInicioSesion(String rol, Integer codSesion) {}
 
-    public String iniciarSesion(String usuario, String contrasena) {
+    private final String url =
+        "jdbc:sqlserver://127.0.0.1:1433;"
+        + "databaseName=SistemaFacturacionEmpresaPropi;"
+        + "encrypt=true;"
+        + "trustServerCertificate=true;"
+        + "loginTimeout=5";
+
+    public ResultadoInicioSesion iniciarSesion(String usuario, String contrasena,
+                                               String terminal, String ip) {
 
         if (usuario == null || usuario.isBlank()
                 || contrasena == null || contrasena.isBlank()) {
@@ -37,17 +43,21 @@ public class AuthService {
              ResultSet resultado = consulta.executeQuery()) {
 
             if (resultado.next()) {
+                String rol = null;
 
                 if (resultado.getInt("administrador") == 1) {
-                    return "Rol_Admin";
+                    rol = "Rol_Admin";
+                } else if (resultado.getInt("digitador") == 1) {
+                    rol = "Rol_Digitador";
+                } else if (resultado.getInt("consulta") == 1) {
+                    rol = "Rol_Consulta";
                 }
 
-                if (resultado.getInt("digitador") == 1) {
-                    return "Rol_Digitador";
-                }
-
-                if (resultado.getInt("consulta") == 1) {
-                    return "Rol_Consulta";
+                if (rol != null) {
+                    Integer codSesion = registrarInicioSesion(
+                        conexion, usuario, terminal, ip
+                    );
+                    return new ResultadoInicioSesion(rol, codSesion);
                 }
             }
 
@@ -64,14 +74,13 @@ public class AuthService {
         }
     }
 
-        // REQ 003: registra el ingreso en BitacoraSesiones y devuelve el código de la sesión.
-    public Integer registrarInicioSesion(String usuario, String contrasena,
-                                         String terminal, String ip) {
-        try (Connection conexion = DriverManager.getConnection(url, usuario, contrasena);
-             CallableStatement cs = conexion.prepareCall(
-                 "{call dbo.sp_RegistrarInicioSesion(?, ?, ?, ?)}")) {
-            cs.setString(1, usuario);
-            cs.setString(2, terminal);
+        // REQ 003: registra el ingreso usando la misma conexión de autenticación.
+        private Integer registrarInicioSesion(Connection conexion, String usuario,
+                                              String terminal, String ip) {
+            try (CallableStatement cs = conexion.prepareCall(
+                     "{call dbo.sp_RegistrarInicioSesion(?, ?, ?, ?)}")) {
+                cs.setString(1, usuario);
+                cs.setString(2, terminal);
             cs.setString(3, ip);
             cs.registerOutParameter(4, Types.INTEGER);   
             cs.execute();

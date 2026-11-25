@@ -5,6 +5,7 @@ import java.util.Map;
 import com.facturacion.dto.LoginRequest;
 import com.facturacion.dto.LoginResponse;
 import com.facturacion.servicio.AuthService;
+import com.facturacion.servicio.AuthService.ResultadoInicioSesion;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -28,12 +29,14 @@ public class AuthController {
             @RequestBody LoginRequest solicitud,
             HttpServletRequest request) {
 
-        String rol = authService.iniciarSesion(
+        ResultadoInicioSesion resultado = authService.iniciarSesion(
             solicitud.getUsuario(),
-            solicitud.getContrasena()
+            solicitud.getContrasena(),
+            request.getRemoteAddr(),
+            request.getRemoteAddr()
         );
 
-        if (rol == null) {
+        if (resultado == null) {
             LoginResponse respuesta = new LoginResponse(
                 false, null, "Usuario, contraseña o rol no válido."
             );
@@ -47,21 +50,14 @@ public class AuthController {
             anterior.invalidate();
         }
 
-        Integer codSesion = authService.registrarInicioSesion(
-            solicitud.getUsuario(),
-            solicitud.getContrasena(),
-            request.getRemoteHost(),   // nombre de la terminal
-            request.getRemoteAddr()    // dirección IP
-        );
-
         HttpSession sesion = request.getSession(true);
         sesion.setAttribute("usuario", solicitud.getUsuario());
         sesion.setAttribute("clave", solicitud.getContrasena());
-        sesion.setAttribute("rol", rol);
-        sesion.setAttribute("codSesion", codSesion);
+        sesion.setAttribute("rol", resultado.rol());
+        sesion.setAttribute("codSesion", resultado.codSesion());
         sesion.setMaxInactiveInterval(30 * 60);   // 30 minutos de inactividad
 
-        return ResponseEntity.ok(new LoginResponse(true, rol, "Inicio de sesión exitoso."));
+        return ResponseEntity.ok(new LoginResponse(true, resultado.rol(), "Inicio de sesión exitoso."));
     }
 
     // Las pantallas lo llaman al cargar para saber quién está conectado y con qué rol.
