@@ -20,8 +20,12 @@ public class FacturaControlador {
         this.facturaServicio = facturaServicio;
     }
 
+        // ?limite=50 devuelve las últimas facturas; sin límite devuelve todas.
     @GetMapping
-    public ResponseEntity<List<FacturaDTO>> getAllFacturas() {
+    public ResponseEntity<List<FacturaDTO>> getAllFacturas(@RequestParam(required = false) Integer limite) {
+        if (limite != null && limite > 0) {
+            return ResponseEntity.ok(facturaServicio.findUltimas(limite));
+        }
         return ResponseEntity.ok(facturaServicio.findAll());
     }
 

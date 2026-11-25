@@ -2,6 +2,8 @@ package com.facturacion.servicio;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.facturacion.dto.FacturaDTO;
@@ -19,6 +21,12 @@ public class FacturaServicio {
     public FacturaServicio(FacturaRepo facturaRepo, ProductoServicioRepo productoRepo) {
         this.facturaRepo = facturaRepo;
         this.productoRepo = productoRepo;
+    }
+
+    @Transactional(readOnly = true)
+    public List<FacturaDTO> findUltimas(int limite) {
+        return facturaRepo.findAll(PageRequest.of(0, limite, Sort.by(Sort.Direction.DESC, "numFactura")))
+                .getContent().stream().map(this::convertirADTO).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

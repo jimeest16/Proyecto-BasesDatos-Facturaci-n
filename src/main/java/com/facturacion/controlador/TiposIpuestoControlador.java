@@ -9,7 +9,7 @@ import com.facturacion.dto.TiposImpuestoDTO;
 import com.facturacion.servicio.TiposImpuestoServicio;
 
 @RestController
-@RequestMapping("/tipos-impuesto")
+@RequestMapping("/api/tipos-impuesto")
 public class TiposIpuestoControlador {
 
     private final TiposImpuestoServicio servicio;
@@ -32,5 +32,17 @@ public class TiposIpuestoControlador {
     @PostMapping
     public ResponseEntity<TiposImpuestoDTO> create(@RequestBody TiposImpuestoDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(servicio.save(dto));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TiposImpuestoDTO> update(@PathVariable String id, @RequestBody TiposImpuestoDTO dto) {
+        TiposImpuestoDTO actualizado = servicio.actualizar(id, dto);
+        return actualizado != null ? ResponseEntity.ok(actualizado) : ResponseEntity.notFound().build();
+    }
+
+    // Borrado lógico: el tipo de impuesto queda Inactivo (I) porque lo usan productos.
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        return servicio.inactivar(id) ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }

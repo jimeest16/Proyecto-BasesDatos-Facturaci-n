@@ -38,6 +38,28 @@ public class TiposImpuestoServicio {
         return convertirADTO(repo.save(entity));
     }
 
+    public TiposImpuestoDTO actualizar(String id, TiposImpuestoDTO dto) {
+        TiposImpuesto entity = repo.findByCodTipoImpuesto(id);
+        if (entity == null) {
+            return null;
+        }
+        if (dto.getDesTipoImpuesto() != null) entity.setDesTipoImpuesto(dto.getDesTipoImpuesto());
+        if (dto.getPorcentaje() != null) entity.setPorcentaje(dto.getPorcentaje());
+        if (dto.getTarifa() != null) entity.setTarifa(dto.getTarifa());
+        if (dto.getIndEstado() != null) entity.setIndEstado(dto.getIndEstado());
+        return convertirADTO(repo.save(entity));
+    }
+
+    public boolean inactivar(String id) {
+        TiposImpuesto entity = repo.findByCodTipoImpuesto(id);
+        if (entity == null) {
+            return false;
+        }
+        entity.setIndEstado("I");
+        repo.save(entity);
+        return true;
+    }
+
     private TiposImpuestoDTO convertirADTO(TiposImpuesto entity) {
         return new TiposImpuestoDTO(
             entity.getCodTipoImpuesto(), entity.getDesTipoImpuesto(),

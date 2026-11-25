@@ -43,7 +43,6 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <!-- Spring Boot DevTools para recarga rapida en desarrollo -->

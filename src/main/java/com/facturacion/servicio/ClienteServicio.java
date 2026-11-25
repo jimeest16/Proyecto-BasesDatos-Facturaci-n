@@ -1,149 +1,169 @@
 package com.facturacion.servicio;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.facturacion.dto.ClienteDTO;
-import com.facturacion.entidades.Cliente;
 import com.facturacion.repositorio.ClienteRepo;
 
+/**
+ * CRUD de clientes (REQ 002) usando procedimientos almacenados.
+ * Los datos sensibles se cifran y descifran dentro de SQL Server con
+ * LlaveSimetricaClientes (REQ 006); la aplicación nunca maneja la llave.
+ *   - Insertar:   dbo.sp_InsertarCliente
+ *   - Consultar:  dbo.sp_ConsultarClientes   (devuelve los datos descifrados)
+ *   - Modificar:  dbo.sp_ActualizarCliente   (vuelve a cifrar los datos sensibles)
+ *   - Eliminar:   dbo.sp_EliminarClienteSeguro (solo si el cliente no tiene facturas)
+ */
 @Service
 @Transactional
 public class ClienteServicio {
 
     private final ClienteRepo clienteRepo;
+    private final JdbcTemplate jdbc;
 
-    public ClienteServicio(ClienteRepo clienteRepo) {
+    public ClienteServicio(ClienteRepo clienteRepo, JdbcTemplate jdbc) {
         this.clienteRepo = clienteRepo;
+        this.jdbc = jdbc;
     }
+
+    // ------------------------------------------------------------------ consultas
 
     @Transactional(readOnly = true)
     public List<ClienteDTO> findAll() {
-        return clienteRepo.findAll()
-                .stream()
-                .map(this::convertirClienteADTO)
-                .collect(Collectors.toList());
+        return consultar(null, null);
     }
 
     @Transactional(readOnly = true)
-  public ClienteDTO findByCodCliente(int codCliente) {
-    Cliente cliente = clienteRepo.findByCodCliente(codCliente);
-    if (cliente == null) {
-        return null; 
+    public ClienteDTO findByCodCliente(int codCliente) {
+        List<ClienteDTO> lista = consultar(codCliente, null);
+        return lista.isEmpty() ? null : lista.get(0);
     }
-    return convertirClienteADTO(cliente);
-}
 
     @Transactional(readOnly = true)
     public List<ClienteDTO> findByNomCliente(String nomCliente) {
-        return clienteRepo.findByNomClienteContainingIgnoreCase(nomCliente)
-                .stream()
-                .map(this::convertirClienteADTO)
-                .collect(Collectors.toList());
+        String nombre = nomCliente == null ? null : nomCliente.trim();
+        return consultar(null, nombre);
     }
 
     @Transactional(readOnly = true)
     public List<ClienteDTO> findByEstado(String indEstado) {
-        return clienteRepo.findByIndEstado(indEstado)
-                .stream()
-                .map(this::convertirClienteADTO)
+        String estado = indEstado == null ? "" : indEstado.trim();
+        return consultar(null, null).stream()
+                .filter(c -> estado.equalsIgnoreCase(c.getIndEstado()))
                 .collect(Collectors.toList());
     }
 
- 
- public ClienteDTO save(ClienteDTO request) {
-    Integer idGenerado = clienteRepo.insertarCliente(
-        request.getNomCliente(),
-        request.getTipIdentificacion(),
-        request.getNumIdentificacion(),
-        request.getNumTelefono(),
-        request.getDesCorreo(),
-        request.getDesProvincia(),
-        request.getDesCanton(),
-        request.getDesDistrito(),
-        request.getDesBarrio() != null ? request.getDesBarrio() : "",
-        request.getDesProfesion(),
-        request.getDesActividadEconomica()
-    );
-
-    if (idGenerado == null) {
-
-        List<ClienteDTO> encontrados = findByNomCliente(request.getNomCliente());
-        return encontrados.isEmpty() ? request : encontrados.get(encontrados.size() - 1);
+    private List<ClienteDTO> consultar(Integer cod, String nombre) {
+        return jdbc.query(
+            "EXEC dbo.sp_ConsultarClientes @cod_cliente = ?, @nom_cliente = ?",
+            (rs, i) -> mapear(rs),
+            new SqlParameterValue(Types.INTEGER, cod),
+            new SqlParameterValue(Types.VARCHAR, nombre));
     }
 
-    return findByCodCliente(idGenerado);
-}
+    // ------------------------------------------------------------------ inserción
+
+    public ClienteDTO save(ClienteDTO request) {
+        Integer idGenerado = clienteRepo.insertarCliente(
+            request.getNomCliente(),
+            request.getTipIdentificacion(),
+            request.getNumIdentificacion(),
+            request.getNumTelefono(),
+            request.getDesCorreo(),
+            request.getDesProvincia(),
+            request.getDesCanton(),
+            request.getDesDistrito(),
+            request.getDesBarrio() != null ? request.getDesBarrio() : "",
+            request.getDesProfesion(),
+            request.getDesActividadEconomica()
+        );
+
+        if (idGenerado == null) {
+            List<ClienteDTO> encontrados = findByNomCliente(request.getNomCliente());
+            return encontrados.isEmpty() ? request : encontrados.get(encontrados.size() - 1);
+        }
+        return findByCodCliente(idGenerado);
+    }
+
+    // ------------------------------------------------------------------ modificación
+
     public ClienteDTO actualizar(int id, ClienteDTO request) {
-        List<Cliente> optCliente = (List<Cliente>) clienteRepo.findByCodCliente(id);
-        if (optCliente.isEmpty()) {
+        ClienteDTO actual = findByCodCliente(id);
+        if (actual == null) {
             return null;
         }
-
-        Cliente clienteExistente = optCliente.get(0);
-        clienteExistente.setNomCliente(request.getNomCliente());
-        clienteExistente.setTipIdentificacion(request.getTipIdentificacion());
-
-        
-        if (request.getNumIdentificacion() != null) {
-            clienteExistente.setNumIdentificacion(request.getNumIdentificacion().getBytes());
-        }
-        if (request.getNumTelefono() != null) {
-            clienteExistente.setNumTelefono(request.getNumTelefono().getBytes());
-        }
-        if (request.getDesCorreo() != null) {
-            clienteExistente.setDesCorreo(request.getDesCorreo().getBytes());
-        }
-
-        clienteExistente.setDesProvincia(request.getDesProvincia());
-        clienteExistente.setDesCanton(request.getDesCanton());
-        clienteExistente.setDesDistrito(request.getDesDistrito());
-        clienteExistente.setDesBarrio(request.getDesBarrio());
-        clienteExistente.setDesProfesion(request.getDesProfesion());
-        clienteExistente.setDesActividadEconomica(request.getDesActividadEconomica());
-        
-        if (request.getIndEstado() != null) {
-            clienteExistente.setIndEstado(request.getIndEstado());
-        }
-
-        Cliente clienteActualizado = clienteRepo.save(clienteExistente);
-        return convertirClienteADTO(clienteActualizado);
+        // sp_ActualizarCliente vuelve a cifrar los tres datos sensibles: si alguno
+        // llega vacío se conserva el valor actual (ya descifrado por la consulta).
+        jdbc.update(
+            "EXEC dbo.sp_ActualizarCliente ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?",
+            new SqlParameterValue(Types.INTEGER, id),
+            new SqlParameterValue(Types.VARCHAR, valor(request.getNomCliente(), actual.getNomCliente())),
+            new SqlParameterValue(Types.VARCHAR, valor(request.getTipIdentificacion(), actual.getTipIdentificacion())),
+            new SqlParameterValue(Types.VARCHAR, valor(request.getNumIdentificacion(), actual.getNumIdentificacion())),
+            new SqlParameterValue(Types.VARCHAR, valor(request.getNumTelefono(), actual.getNumTelefono())),
+            new SqlParameterValue(Types.VARCHAR, valor(request.getDesCorreo(), actual.getDesCorreo())),
+            new SqlParameterValue(Types.VARCHAR, valor(request.getDesProvincia(), actual.getDesProvincia())),
+            new SqlParameterValue(Types.VARCHAR, valor(request.getDesCanton(), actual.getDesCanton())),
+            new SqlParameterValue(Types.VARCHAR, valor(request.getDesDistrito(), actual.getDesDistrito())),
+            new SqlParameterValue(Types.VARCHAR, request.getDesBarrio() != null ? request.getDesBarrio().trim() : actual.getDesBarrio()),
+            new SqlParameterValue(Types.VARCHAR, valor(request.getDesProfesion(), actual.getDesProfesion())),
+            new SqlParameterValue(Types.VARCHAR, valor(request.getDesActividadEconomica(), actual.getDesActividadEconomica())),
+            new SqlParameterValue(Types.CHAR, valor(request.getIndEstado(), actual.getIndEstado() != null ? actual.getIndEstado() : "A")));
+        return findByCodCliente(id);
     }
 
-    // ELIMINACIÓN
+    // ------------------------------------------------------------------ eliminación
+
     public boolean eliminar(int id) {
-        List<Cliente> optCliente = (List<Cliente>) clienteRepo.findByCodCliente(id);
-        if (optCliente.isEmpty()) {
+        if (findByCodCliente(id) == null) {
             return false;
         }
-        clienteRepo.delete(optCliente.get(0));
-        return true;
+        try {
+            jdbc.update("EXEC dbo.sp_EliminarClienteSeguro ?", new SqlParameterValue(Types.INTEGER, id));
+            return true;
+        } catch (DataAccessException e) {
+            String mensaje = e.getMostSpecificCause().getMessage();
+            if (mensaje != null && mensaje.contains("facturas")) {
+                // Regla de negocio del procedimiento: un cliente con facturas no se borra, se inactiva.
+                throw new IllegalStateException(mensaje);
+            }
+            throw e;
+        }
     }
 
-    // metodo que convierte un cliente con los atributos que solo vamos a necesitar en el front
-    private ClienteDTO convertirClienteADTO(Cliente cliente) {
-        String numIdentificacionStr = cliente.getNumIdentificacion() != null ? new String(cliente.getNumIdentificacion()) : null;
-        String numTelefonoStr = cliente.getNumTelefono() != null ? new String(cliente.getNumTelefono()) : null;
-        String desCorreoStr = cliente.getDesCorreo() != null ? new String(cliente.getDesCorreo()) : null;
+    // ------------------------------------------------------------------ utilidades
 
+    private static String valor(String nuevo, String actual) {
+        return (nuevo == null || nuevo.isBlank()) ? actual : nuevo.trim();
+    }
+
+    private ClienteDTO mapear(ResultSet rs) throws SQLException {
+        Timestamp fecha = rs.getTimestamp("fec_registro");
         return new ClienteDTO(
-            cliente.getCodCliente(),
-            cliente.getNomCliente(),
-            cliente.getTipIdentificacion(),
-            numIdentificacionStr,
-            numTelefonoStr,
-            desCorreoStr,
-            cliente.getDesProvincia(),
-            cliente.getDesCanton(),
-            cliente.getDesDistrito(),
-            cliente.getDesBarrio(),
-            cliente.getDesProfesion(),
-            cliente.getDesActividadEconomica(),
-            cliente.getFecRegistro(),
-            cliente.getIndEstado()
-        );
+            rs.getInt("cod_cliente"),
+            rs.getString("nom_cliente"),
+            rs.getString("tip_identificacion"),
+            rs.getString("num_identificacion"),
+            rs.getString("num_telefono"),
+            rs.getString("des_correo"),
+            rs.getString("des_provincia"),
+            rs.getString("des_canton"),
+            rs.getString("des_distrito"),
+            rs.getString("des_barrio"),
+            rs.getString("des_profesion"),
+            rs.getString("des_actividad_economica"),
+            fecha != null ? fecha.toLocalDateTime() : null,
+            rs.getString("ind_estado"));
     }
 }

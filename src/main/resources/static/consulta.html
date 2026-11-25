@@ -3,214 +3,1328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuario Consulta - Propi Facturación</title>
+    <title>Panel del Digitador - Sistema de Facturación</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
     <style>
-        :root{--bg:#f4f3f0;--panel:#fcfbf9;--side:#ebe7e0;--head:#2d2b2a;--body:#57534e;--terra:#dd6b53;--sage:#5b8a72;--lav:#8b78a5;--line:#d6d1c4}
-        *{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'Outfit','Segoe UI',sans-serif;background:radial-gradient(circle at 8% 12%,rgba(221,107,83,.1),transparent 28%),radial-gradient(circle at 92% 88%,rgba(91,138,114,.1),transparent 30%),var(--bg);color:var(--body);min-height:100vh;padding:20px}
-        .app{display:flex;max-width:1280px;margin:0 auto;min-height:calc(100vh - 40px);background:var(--panel);border:1.5px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:0 18px 45px rgba(45,43,42,.08)}
-        .side{width:250px;flex-shrink:0;background:linear-gradient(180deg,var(--side),#e6e2d9);border-right:1.5px solid var(--line);padding:26px 14px;display:flex;flex-direction:column;justify-content:space-between;position:relative}
-        .side::after{content:"";position:absolute;top:0;right:-1.5px;width:3px;height:86px;background:var(--terra);border-radius:0 0 4px 4px}
-        .marca{font-family:'Space Grotesk',sans-serif;font-size:1.15rem;color:var(--head);padding:0 8px}
-        .contexto{margin-top:5px;font-size:.72rem;line-height:1.4;padding:0 8px;color:var(--body)}
-        .perfil{font-size:.78rem;padding:6px 8px 18px;color:var(--body)}
-        .side button,.side a.nav{display:block;width:100%;text-align:left;text-decoration:none;font:600 .85rem 'Outfit',sans-serif;color:var(--head);background:transparent;border:1.5px solid transparent;border-radius:12px;padding:12px 14px;margin-bottom:6px;cursor:pointer}
-        .side button:hover,.side a.nav:hover{background:#f5f2ec;transform:translateX(2px)}
-        .side button.activo{background:#fff;border-color:var(--line);color:var(--terra);box-shadow:0 4px 12px rgba(45,43,42,.06)}
-        .side .sep{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding:14px 8px 6px;color:#a8a29e;font-weight:700}
-        .side button.salir{background:#f6e4e0;color:var(--terra);text-align:center;margin:0}
-        .main{flex:1;min-width:0;padding:30px 32px;background:linear-gradient(135deg,#fcfbf9 0%,#f8f6f1 100%)}
-        .main h2{font-family:'Space Grotesk',sans-serif;color:var(--head);font-size:1.35rem;padding:0 0 14px 12px;border-bottom:1px dashed var(--line);margin-bottom:22px;position:relative}
-        .main h2::before{content:"";position:absolute;left:0;top:3px;width:4px;height:24px;background:var(--terra);border-radius:4px}
-        .filtros{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-bottom:14px;padding:14px;background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:14px;box-shadow:0 5px 16px rgba(45,43,42,.035)}
-        .filtros label{display:flex;flex-direction:column;gap:5px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--head)}
-        .filtros input,.filtros select{padding:10px 12px;min-width:170px;background:#f5f4f0;border:1.5px solid var(--line);border-radius:10px;font:.9rem 'Outfit',sans-serif;color:var(--head);outline:none}
-        .filtros input:focus,.filtros select:focus{border-color:var(--lav);background:#fff;box-shadow:0 0 0 3px rgba(139,120,165,.12)}
-        .filtros .generar{width:auto;margin:0;padding:11px 22px;background:var(--head);color:#fcfbf9;border:0;border-radius:12px;font:700 .88rem 'Space Grotesk',sans-serif;cursor:pointer;transition:all .2s ease}
-        .filtros .generar:hover{background:var(--sage);transform:translateY(-1px);box-shadow:0 4px 12px rgba(91,138,114,.2)}
-        .estado{min-height:1.4em;font:700 .85rem 'Space Grotesk',sans-serif;color:var(--lav);margin-bottom:10px}
-        .estado.error{color:var(--terra)}
-        .tabla-wrap{overflow:auto;max-height:60vh;border:1.5px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 6px 18px rgba(45,43,42,.04)}
-        table{border-collapse:collapse;width:100%;font-size:.84rem}
-        th{position:sticky;top:0;background:var(--head);color:#fff;text-align:left;padding:11px 12px;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;border-bottom:1.5px solid var(--head)}
-        td{padding:10px 12px;border-bottom:1px solid #eee9de;vertical-align:top;max-width:420px;word-break:break-word}
-        tr:hover td{background:#fffaf5}
-        .estado:not(:empty){padding:9px 12px;background:#f2eee7;border-radius:10px}
-        @media(max-width:800px){.app{flex-direction:column}.side{width:100%}.filtros label,.filtros input,.filtros select{width:100%;min-width:100%}}
+        :root {
+            --bg-canvas: #f4f3f0;
+            --panel-bg: #fcfbf9;
+            --sidebar-bg: #eae8e1;
+            --text-heading: #2d2b2a;
+            --text-body: #57534e;
+            --accent-terracotta: #dd6b53;
+            --accent-sage: #5b8a72;
+            --accent-lavender: #8b78a5;
+            --accent-sand: #e3dec3;
+            --border-soft: #d6d1c4;
+            --card-shadow: 0 8px 24px rgba(45, 43, 42, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background:
+                radial-gradient(circle at 8% 12%, rgba(221, 107, 83, 0.1), transparent 28%),
+                radial-gradient(circle at 92% 88%, rgba(91, 138, 114, 0.1), transparent 30%),
+                var(--bg-canvas);
+            color: var(--text-body);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        /* VISTA ALEJADA / ESCALADA PARA MAYOR VISIBILIDAD */
+        .app-container {
+            display: flex;
+            width: 100%;
+            max-width: 1380px;
+            height: min(900px, 92vh);
+            margin: 0 auto;
+            background: var(--panel-bg);
+            border: 1.5px solid var(--border-soft);
+            border-radius: 20px;
+            box-shadow: 0 18px 45px rgba(45, 43, 42, 0.08);
+            overflow: hidden;
+        }
+
+        /* BARRA LATERAL COMPACTA */
+        aside.sidebar {
+            width: 240px;
+            background: linear-gradient(180deg, var(--sidebar-bg), #e6e2d9);
+            padding: 20px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1.5px solid var(--border-soft);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        aside.sidebar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: -1.5px;
+            width: 3px;
+            height: 86px;
+            background: var(--accent-terracotta);
+            border-radius: 0 0 4px 4px;
+        }
+
+        .brand-box {
+            padding-bottom: 16px;
+            border-bottom: 1.5px solid var(--border-soft);
+        }
+
+        .brand-box h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            letter-spacing: -0.5px;
+        }
+
+        .brand-context {
+            margin-top: 5px;
+            color: var(--text-body);
+            font-size: 0.72rem;
+            line-height: 1.4;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            background: transparent;
+            color: var(--text-heading);
+            border: 1.5px solid transparent;
+            border-radius: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 0 0 0 var(--accent-terracotta);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.6);
+            transform: translateX(3px);
+        }
+
+        .nav-item.active {
+            background: #ffffff;
+            border-color: var(--border-soft);
+            color: var(--accent-terracotta);
+            box-shadow: 0 4px 12px rgba(45, 43, 42, 0.06);
+        }
+
+        .btn-salir {
+            padding: 10px;
+            background: #f5e6e3;
+            color: var(--accent-terracotta);
+            border: 1px solid #ebc6be;
+            border-radius: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .btn-salir:hover {
+            background: var(--accent-terracotta);
+            color: #ffffff;
+        }
+
+        /* ZONA DE CONTENIDO Y MODULOS */
+        main.main-content {
+            flex-grow: 1;
+            padding: 24px 30px;
+            background: linear-gradient(135deg, #fcfbf9 0%, #f8f6f1 100%);
+            overflow-y: auto;
+        }
+
+        .panel-contenedor {
+            display: none;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-header {
+            margin-bottom: 18px;
+            padding: 4px 0 12px;
+            border-bottom: 1.5px solid var(--border-soft);
+        }
+
+        .panel-header h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            padding-left: 12px;
+            position: relative;
+        }
+
+        .panel-header h2::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 4px;
+            height: 22px;
+            background: var(--accent-terracotta);
+            border-radius: 4px;
+        }
+
+        /* FORMULARIOS Y CAMPOS DE ENTRADA COMPACTOS */
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px 18px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.68);
+            border: 1px solid rgba(214, 209, 196, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(45, 43, 42, 0.035);
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .campo.full {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            padding: 8px 12px;
+            background: #f5f4f0;
+            border: 1.5px solid var(--border-soft);
+            border-radius: 10px;
+            color: var(--text-heading);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.88rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            background: #ffffff;
+            border-color: var(--accent-lavender);
+            box-shadow: 0 0 0 3px rgba(139, 120, 165, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .btn-guardar {
+            grid-column: span 2;
+            padding: 11px;
+            margin-top: 8px;
+            background: var(--text-heading);
+            color: #fcfbf9;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 0.88rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-guardar:hover {
+            background: var(--accent-sage);
+            box-shadow: 0 4px 14px rgba(91, 138, 114, 0.2);
+        }
+
+        .btn-guardar:active {
+            transform: translateY(1px);
+        }
+
+        /* TABLA Y PÁGINA DE NAVEGACIÓN DE CLIENTES */
+        .barra-busqueda {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid var(--border-soft);
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(45, 43, 42, 0.035);
+        }
+
+        .tabla-resultados {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 6px;
+            font-size: 0.82rem;
+            background: #ffffff;
+            border: 1px solid var(--border-soft);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .tabla-resultados th {
+            padding: 8px 12px;
+            color: #ffffff;
+            background: var(--text-heading);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            text-align: left;
+            border-bottom: 1.5px solid var(--text-heading);
+        }
+
+        .tabla-resultados td {
+            padding: 10px 12px;
+            background: #f7f6f2;
+            color: var(--text-body);
+            border-bottom: 1px solid #ebe7de;
+        }
+
+        .tabla-resultados tbody tr:hover td {
+            background: #fffaf5;
+        }
+
+        .tabla-resultados tbody tr td:first-child {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+            font-weight: 600;
+        }
+
+        .tabla-resultados tbody tr td:last-child {
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        /* BARRA DE PAGINACIÓN */
+        .paginacion-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding: 12px 4px 0;
+            border-top: 1.5px solid var(--border-soft);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.82rem;
+            color: var(--text-heading);
+        }
+
+        .btn-pagina {
+            padding: 6px 14px;
+            background: #eae8e1;
+            color: var(--text-heading);
+            border: 1.5px solid var(--border-soft);
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-pagina:hover:not(:disabled) {
+            background: var(--accent-sage);
+            color: #ffffff;
+            border-color: var(--accent-sage);
+        }
+
+        .btn-pagina:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-pagina:not(:disabled):active {
+            transform: translateY(1px);
+        }
+
+        .mensaje-estado {
+            margin-top: 12px;
+            text-align: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--accent-lavender);
+        }
+
+        @media (max-width: 900px) {
+            .app-container {
+                flex-direction: column;
+                height: auto;
+            }
+            aside.sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1.5px solid var(--border-soft);
+            }
+            .grid-form {
+                grid-template-columns: 1fr;
+            }
+            .campo.full, .btn-guardar {
+                grid-column: span 1;
+            }
+            .barra-busqueda {
+                flex-wrap: wrap;
+            }
+            .barra-busqueda select,
+            .barra-busqueda input {
+                min-width: 100%;
+            }
+        }
+        .btn-accion {
+            padding: 4px 10px;
+            margin: 2px;
+            border: 1.5px solid var(--border-soft);
+            border-radius: 8px;
+            background: #ffffff;
+            color: var(--text-heading);
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .btn-accion:hover { border-color: var(--accent-lavender); }
+        .btn-accion.peligro { color: var(--accent-terracotta); }
+        .btn-secundario {
+            grid-column: span 2;
+            padding: 9px;
+            background: transparent;
+            color: var(--text-heading);
+            border: 1.5px solid var(--border-soft);
+            border-radius: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .solo-admin { display: none; }
+        .usuario-sesion { margin-top: 4px; font-weight: 600; }
     </style>
 </head>
-<body data-rol="Rol_Consulta">
-    <div class="app">
-        <aside class="side">
+
+<body>
+
+    <div class="app-container">
+        <!-- BARRA LATERAL NAVEGABLE -->
+        <aside class="sidebar">
             <div>
-                <h1 class="marca">Propi Facturación</h1>
-                <p class="contexto">Facturación electrónica · Costa Rica</p>
-                <p class="perfil" id="perfil">Usuario Consulta</p>
-                <div class="sep">Reportes</div>
-                <nav id="menu"></nav>
+                <div class="brand-box">
+                    <h1>Propi Facturación</h1>
+                    <p class="brand-context">Facturación electrónica · Costa Rica</p>
+                    <p class="brand-context usuario-sesion" id="lblUsuarioSesion"></p>
+                  </div>
+                <nav class="nav-menu">
+                    <button class="nav-item active" id="btn-nav-busqueda" onclick="abrirModulo('busqueda')">
+                        Consulta de Clientes
+                    </button>
+                    <button class="nav-item" id="btn-nav-cliente" onclick="abrirModulo('cliente')">
+                        Registrar Cliente
+                    </button>
+                    <button class="nav-item" id="btn-nav-factura" onclick="abrirModulo('factura')">
+                        Nueva Factura
+                    </button>
+                    <button class="nav-item" id="btn-nav-nota" onclick="abrirModulo('nota')">
+                        Notas de Crédito / Débito
+                    </button>
+                    <button class="nav-item" id="btn-nav-facturas" onclick="abrirModulo('facturas')">
+                        Consulta de Facturas
+                    </button>
+                    <button class="nav-item solo-admin" id="btn-nav-catalogos" onclick="abrirModulo('catalogos')">
+                        Productos e Impuestos
+                    </button>
+                    <a class="nav-item solo-admin" href="/facturacion/admin.html" style="text-decoration:none;">
+                        Reportes (Administrador)
+                    </a>
+                </nav>
             </div>
-            <button type="button" class="salir" id="btnSalir">Cerrar sesión</button>
+            <div>
+                <button type="button" class="btn-salir" id="btnCerrarSesion"
+                    onclick="fetch('/facturacion/api/auth/logout', { method: 'POST', keepalive: true }).catch(() => {}); window.location.replace('/facturacion/login.html');">
+                    Cerrar sesión
+                </button>
+            </div>
         </aside>
-        <main class="main">
-            <h2 id="titulo"></h2>
-            <form id="filtros" class="filtros"></form>
-            <p id="estado" class="estado" role="status"></p>
-            <div class="tabla-wrap">
-                <table><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+
+        <!-- ÁREA DE MÓDULOS -->
+        <main class="main-content">
+
+            <!-- BÚSQUEDA DE CLIENTES -->
+            <div id="modulo-busqueda" class="panel-contenedor" style="display: block;">
+                <div class="panel-header">
+                    <h2>Búsqueda & Consulta de Clientes</h2>
+                </div>
+                
+                <div class="barra-busqueda">
+                    <select id="tipo_busqueda" style="flex: 1;">
+                        <option value="id">Buscar por ID</option>
+                        <option value="nombre">Buscar por Nombre</option>
+                    </select>
+                    <input type="text" id="buscar_criterio" placeholder="Escribe el ID o nombre..." style="flex: 2;">
+                    <button class="btn-guardar" onclick="ejecutarBusquedaCliente()" style="grid-column: auto; margin-top: 0; padding: 8px 18px;">Buscar</button>
+                    <button class="btn-guardar" onclick="obtenerTodosLosClientes()" style="grid-column: auto; margin-top: 0; padding: 8px 18px; background: var(--accent-sage);">Ver Todos</button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="tabla-resultados">
+                        <thead>
+                            <tr>
+                                <th>Cod</th>
+                                <th>Nombre</th>
+                                <th>Tipo ID</th>
+                                <th>Identificación</th>
+                                <th>Teléfono</th>
+                                <th>Correo</th>
+                                <th>Ubicación</th>
+                                <th>Actividad</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpoTablaClientes">
+                            <tr>
+                                <td colspan="10" style="text-align: center; color: var(--text-body);">Selecciona un criterio y presiona "Buscar" o "Ver Todos".</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- CONTROLES DE PAGINACIÓN -->
+                <div class="paginacion-bar">
+                    <button id="btnPaginaAnt" class="btn-pagina" onclick="cambiarPagina(-1)" disabled>◀ Anterior</button>
+                    <span id="lblPaginacion">Página 1</span>
+                    <button id="btnPaginaSig" class="btn-pagina" onclick="cambiarPagina(1)" disabled>Siguiente ▶</button>
+                </div>
             </div>
+
+            <!-- REGISTRAR CLIENTE -->
+            <div id="modulo-cliente" class="panel-contenedor">
+                <div class="panel-header">
+                    <h2 id="tituloFormCliente">Registrar Nuevo Cliente</h2>
+                </div>
+                <form id="formCliente" class="grid-form">
+                    <input type="hidden" id="codClienteEdicion" value="">
+                    <div class="campo">
+                        <label>Nombre Completo</label>
+                        <input type="text" id="nomCliente" required>
+                    </div>
+                    <div class="campo">
+                        <label>Tipo Identificación</label>
+                        <select id="tipIdentificacion" required>
+                            <option value="Fisica">Cédula Física</option>
+                            <option value="Juridica">Cédula Jurídica</option>
+                            <option value="DIMEX">DIMEX</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Número Identificación (Sensible)</label>
+                        <input type="text" id="numIdentificacion" placeholder="1-0000-0000" required>
+                    </div>
+                    <div class="campo">
+                        <label>Teléfono (Sensible)</label>
+                        <input type="text" id="numTelefono" placeholder="88888888" required>
+                    </div>
+                    <div class="campo">
+                        <label>Correo Electrónico (Sensible)</label>
+                        <input type="email" id="desCorreo" placeholder="correo@ejemplo.com" required>
+                    </div>
+                    <div class="campo">
+                        <label>Profesión / Oficio</label>
+                        <input type="text" id="desProfesion" placeholder="Ingeniero / Comerciante" required>
+                    </div>
+                    <div class="campo">
+                        <label>Actividad Económica</label>
+                        <input type="text" id="desActividadEconomica" placeholder="Servicios Inmobiliarios" required>
+                    </div>
+                    <div class="campo">
+                        <label>Provincia</label>
+                        <input type="text" id="desProvincia" placeholder="Cartago" required>
+                    </div>
+                    <div class="campo">
+                        <label>Cantón</label>
+                        <input type="text" id="desCanton" placeholder="Paraíso" required>
+                    </div>
+                    <div class="campo">
+                        <label>Distrito</label>
+                        <input type="text" id="desDistrito" placeholder="Paraíso" required>
+                    </div>
+                    <div class="campo full">
+                        <label>Barrio</label>
+                        <input type="text" id="desBarrio" placeholder="Centro">
+                    </div>
+                    <div class="campo" id="campoEstadoCliente" style="display:none;">
+                        <label>Estado</label>
+                        <select id="indEstadoCliente">
+                            <option value="A">Activo</option>
+                            <option value="I">Inactivo</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-guardar" id="btnGuardarCliente">Guardar Cliente</button>
+                    <button type="button" class="btn-secundario" id="btnCancelarEdicion" style="display:none;" onclick="cancelarEdicionCliente()">Cancelar edición</button>
+                </form>
+                <p id="msgCliente" class="mensaje-estado"></p>
+            </div>
+
+            <!-- EMISIÓN DE FACTURA -->
+            <div id="modulo-factura" class="panel-contenedor">
+                <div class="panel-header">
+                    <h2>Emisión de Factura Electrónica</h2>
+                </div>
+                <form id="formFactura" class="grid-form">
+                    <div class="campo">
+                        <label>Código Cliente (cod_cliente)</label>
+                        <input type="number" id="fac_cliente_id" placeholder="ID del cliente" required>
+                    </div>
+                    <div class="campo">
+                        <label>Condición de Venta</label>
+                        <select id="fac_condicion">
+                            <option value="Contado">Contado</option>
+                            <option value="Credito">Crédito</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Medio de Pago</label>
+                        <select id="fac_medio_pago">
+                            <option value="Efectivo">Efectivo</option>
+                            <option value="Tarjeta">Tarjeta</option>
+                            <option value="Transferencia">Transferencia</option>
+                            <option value="SINPE Movil">SINPE Móvil</option>
+                            <option value="Cheque">Cheque</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Moneda</label>
+                        <select id="fac_moneda" onchange="actualizarTipoCambio()">
+                            <option value="CRC">CRC (Colones)</option>
+                            <option value="USD">USD (Dólares)</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label>Tipo de Cambio</label>
+                        <input type="number" step="0.0001" id="fac_tipo_cambio" value="1.0000" required>
+                    </div>
+                    <div class="campo">
+                        <label>Código Producto/Servicio (cod_producto)</label>
+                        <input type="number" id="fac_cod_producto" placeholder="ID del producto" required>
+                    </div>
+                    <div class="campo">
+                        <label>Cantidad</label>
+                        <input type="number" step="0.01" id="fac_cantidad" value="1" oninput="calcularTotales()" required>
+                    </div>
+                    <div class="campo">
+                        <label>Precio Unitario / Subtotal</label>
+                        <input type="number" step="0.01" id="fac_subtotal" placeholder="0.00" oninput="calcularTotales()" required>
+                    </div>
+                    <div class="campo full">
+                        <label>Observaciones</label>
+                        <input type="text" id="fac_observaciones" placeholder="Detalles o notas adicionales de la factura">
+                    </div>
+
+                    <div class="campo full" style="background: #edf4f0; padding: 12px; border-radius: 12px; border: 1.5px solid #d2e4d9;">
+                        <p style="font-family: 'Space Grotesk', sans-serif; font-size: 0.88rem; color: var(--text-heading); font-weight: 700;">
+                            Impuestos (13%): <b id="lbl_impuestos" style="color: var(--accent-lavender);">0.00</b> | 
+                            Monto Total: <b id="lbl_total" style="color: var(--accent-sage);">0.00</b>
+                        </p>
+                    </div>
+
+                    <button type="submit" class="btn-guardar">Generar y Registrar Factura</button>
+                </form>
+                <p id="msgFactura" class="mensaje-estado"></p>
+            </div>
+
+            <!-- NOTAS DE CRÉDITO / DÉBITO -->
+            <div id="modulo-nota" class="panel-contenedor">
+                <div class="panel-header">
+                    <h2>Notas de Crédito / Débito</h2>
+                </div>
+                <form id="formNota" class="grid-form">
+                    <div class="campo">
+                        <label>Código Factura Referencia (num_factura)</label>
+                        <input type="number" id="nota_factura_id" placeholder="Número de factura" required>
+                    </div>
+                    <div class="campo">
+                        <label>Tipo de Nota (ind_tipo)</label>
+                        <select id="nota_tipo" required>
+                            <option value="Credito">Nota de Crédito</option>
+                            <option value="Debito">Nota de Débito</option>
+                        </select>
+                    </div>
+                    <div class="campo full">
+                        <label>Motivo (des_motivo)</label>
+                        <textarea id="nota_motivo" rows="2" placeholder="Motivo de la corrección o anulación..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-guardar">Aplicar Nota</button>
+                </form>
+                <p id="msgNota" class="mensaje-estado"></p>
+            </div>
+
+            <!-- CONSULTA DE FACTURAS -->
+            <div id="modulo-facturas" class="panel-contenedor">
+                <div class="panel-header">
+                    <h2>Consulta de Facturas</h2>
+                </div>
+                <div class="barra-busqueda">
+                    <input type="number" id="buscar_factura" placeholder="Número de factura (vacío = últimas 50)" style="flex: 2;">
+                    <button class="btn-guardar" onclick="consultarFacturas()" style="grid-column: auto; margin-top: 0; padding: 8px 18px;">Buscar</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="tabla-resultados">
+                        <thead><tr><th>N.º</th><th>Fecha</th><th>Cliente</th><th>Condición</th><th>Medio pago</th><th>Moneda</th><th>Subtotal</th><th>Impuestos</th><th>Total</th></tr></thead>
+                        <tbody id="cuerpoTablaFacturas"><tr><td colspan="9" style="text-align:center;">Presione "Buscar".</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CATÁLOGOS (SOLO ADMINISTRADOR) -->
+            <div id="modulo-catalogos" class="panel-contenedor">
+                <div class="panel-header">
+                    <h2>Productos / Servicios</h2>
+                </div>
+                <form id="formProducto" class="grid-form">
+                    <input type="hidden" id="prod_id" value="">
+                    <div class="campo"><label>Código CABYS</label><input type="text" id="prod_cabys" required></div>
+                    <div class="campo"><label>Descripción</label><input type="text" id="prod_desc" required></div>
+                    <div class="campo"><label>Unidad de medida</label><input type="text" id="prod_unidad" placeholder="Unid / Sp / m2" required></div>
+                    <div class="campo"><label>Precio</label><input type="number" step="0.01" id="prod_precio" required></div>
+                    <div class="campo"><label>Tipo de impuesto</label><select id="prod_impuesto" required></select></div>
+                    <div class="campo"><label>Estado</label><select id="prod_estado"><option value="A">Activo</option><option value="I">Inactivo</option></select></div>
+                    <button type="submit" class="btn-guardar" id="btnGuardarProducto">Guardar producto</button>
+                    <button type="button" class="btn-secundario" onclick="limpiarProducto()">Limpiar</button>
+                </form>
+                <p id="msgProducto" class="mensaje-estado"></p>
+                <div style="overflow-x: auto; margin-top: 12px; max-height: 260px; overflow-y: auto;">
+                    <table class="tabla-resultados">
+                        <thead><tr><th>Cod</th><th>CABYS</th><th>Descripción</th><th>Unidad</th><th>Precio</th><th>Impuesto</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="cuerpoTablaProductos"></tbody>
+                    </table>
+                </div>
+
+                <div class="panel-header" style="margin-top: 22px;">
+                    <h2>Tipos de Impuesto</h2>
+                </div>
+                <form id="formImpuesto" class="grid-form">
+                    <input type="hidden" id="imp_modo" value="nuevo">
+                    <div class="campo"><label>Código</label><input type="text" id="imp_cod" maxlength="10" required></div>
+                    <div class="campo"><label>Descripción</label><input type="text" id="imp_desc" required></div>
+                    <div class="campo"><label>Porcentaje</label><input type="number" step="0.01" id="imp_porcentaje" required></div>
+                    <div class="campo"><label>Tarifa</label><input type="number" step="0.01" id="imp_tarifa" required></div>
+                    <div class="campo"><label>Estado</label><select id="imp_estado"><option value="A">Activo</option><option value="I">Inactivo</option></select></div>
+                    <button type="submit" class="btn-guardar">Guardar tipo de impuesto</button>
+                    <button type="button" class="btn-secundario" onclick="limpiarImpuesto()">Limpiar</button>
+                </form>
+                <p id="msgImpuesto" class="mensaje-estado"></p>
+                <div style="overflow-x: auto; margin-top: 12px;">
+                    <table class="tabla-resultados">
+                        <thead><tr><th>Código</th><th>Descripción</th><th>Porcentaje</th><th>Tarifa</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="cuerpoTablaImpuestos"></tbody>
+                    </table>
+                </div>
+            </div>
+
         </main>
     </div>
+
     <script>
-        (function () {
-          const BASE = "/facturacion";
-          const ROL_PAGINA = document.body.dataset.rol;
+        // ENDPOINTS 
+        const API_CLIENTES_URL = "/facturacion/api/clientes";
+        const API_FACTURAS_URL = "/facturacion/api/facturas";
+        const API_NOTAS_URL = "/facturacion/api/notas";
+        const API_PRODUCTOS_URL = "/facturacion/api/productos";
+        const API_IMPUESTOS_URL = "/facturacion/api/tipos-impuesto";
+        let rolActual = null;
 
-          const REPORTES = {
-            clientes:  { nombre: "Clientes Resumido",        titulo: "Reporte de Clientes Resumido",           campos: ["desde", "hasta", "estado"] },
-            facturas:  { nombre: "Facturas",                 titulo: "Reporte de Facturas",                    campos: ["desde", "hasta"] },
-            auditoria: { nombre: "Pistas de Auditoría",      titulo: "Reporte de Pistas de Auditoría",         campos: ["desde", "hasta", "usuario"] },
-            seguridad: { nombre: "Configuración de Seguridad", titulo: "Reporte de Configuración de Seguridad", campos: ["usuario"] }
-          };
-          const CAMPOS = {
-            desde:   { label: "Fecha desde", tipo: "date" },
-            hasta:   { label: "Fecha hasta", tipo: "date" },
-            estado:  { label: "Estado", tipo: "select", opciones: [["T", "Todos"], ["A", "Activo"], ["I", "Inactivo"]] },
-            usuario: { label: "Usuario (vacío = todos)", tipo: "text" }
-          };
-
-          const $ = (id) => document.getElementById(id);
-          let reporteActual = null;
-
-          function fechaLocal(d) {
-            const p = (n) => String(n).padStart(2, "0");
-            return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
-          }
-
-          async function validarSesion() {
+        // REQ 003 / REQ 004: la pantalla solo se usa con una sesión válida y un rol autorizado.
+        (async function validarSesion() {
             try {
-              const r = await fetch(BASE + "/api/auth/sesion");
-              if (!r.ok) throw new Error("sin sesion");
-              const s = await r.json();
-              if (s.rol !== ROL_PAGINA) throw new Error("rol distinto");
-              $("perfil").textContent = s.usuario + " · " + s.rol.replace("Rol_", "");
-              return true;
+                const r = await fetch("/facturacion/api/auth/sesion");
+                if (!r.ok) throw new Error("sin sesión");
+                const datos = await r.json();
+                if (datos.rol === "Rol_Consulta") {
+                    window.location.replace("/facturacion/consulta.html");
+                    return;
+                }
+                rolActual = datos.rol;
+                document.getElementById("lblUsuarioSesion").textContent = `Usuario: ${datos.usuario} · ${datos.rol.replace("Rol_", "")}`;
+                if (rolActual === "Rol_Admin") {
+                    document.querySelectorAll(".solo-admin").forEach(el => el.style.display = "block");
+                }
             } catch (e) {
-              window.location.href = BASE + "/login.html";
-              return false;
+                window.location.replace("/facturacion/login.html");
             }
-          }
-
-          function construirMenu() {
-            const menu = $("menu");
-            Object.keys(REPORTES).forEach((clave) => {
-              const b = document.createElement("button");
-              b.type = "button";
-              b.id = "btn-" + clave;
-              b.textContent = REPORTES[clave].nombre;
-              b.addEventListener("click", () => seleccionar(clave));
-              menu.appendChild(b);
-            });
-          }
-
-          function seleccionar(clave) {
-            reporteActual = clave;
-            document.querySelectorAll("#menu button").forEach((b) => b.classList.remove("activo"));
-            $("btn-" + clave).classList.add("activo");
-            $("titulo").textContent = REPORTES[clave].titulo;
-            $("thead").replaceChildren();
-            $("tbody").replaceChildren();
-            mensaje("Elija los filtros y presione “Generar reporte”.", false);
-
-            const form = $("filtros");
-            form.replaceChildren();
-            REPORTES[clave].campos.forEach((nombre) => {
-              const def = CAMPOS[nombre];
-              const label = document.createElement("label");
-              label.textContent = def.label;
-              let input;
-              if (def.tipo === "select") {
-                input = document.createElement("select");
-                def.opciones.forEach(([v, t]) => {
-                  const o = document.createElement("option");
-                  o.value = v; o.textContent = t; input.appendChild(o);
-                });
-              } else {
-                input = document.createElement("input");
-                input.type = def.tipo;
-                if (nombre === "desde") input.value = new Date().getFullYear() + "-01-01";
-                if (nombre === "hasta") input.value = fechaLocal(new Date());
-              }
-              input.name = nombre;
-              label.appendChild(input);
-              form.appendChild(label);
-            });
-            const gen = document.createElement("button");
-            gen.type = "submit"; gen.className = "generar"; gen.textContent = "Generar reporte";
-            form.appendChild(gen);
-          }
-
-          function mensaje(texto, esError) {
-            const e = $("estado");
-            e.textContent = texto;
-            e.className = "estado" + (esError ? " error" : "");
-          }
-
-          async function generar(ev) {
-            ev.preventDefault();
-            const params = new URLSearchParams();
-            new FormData($("filtros")).forEach((v, k) => { if (String(v).trim() !== "") params.append(k, v); });
-            mensaje("Generando reporte...", false);
-            $("thead").replaceChildren();
-            $("tbody").replaceChildren();
-            try {
-              const r = await fetch(BASE + "/api/reportes/" + reporteActual + "?" + params.toString());
-              if (r.status === 401) { window.location.href = BASE + "/login.html"; return; }
-              const datos = await r.json();
-              if (!r.ok) { mensaje(datos.mensaje || "No se pudo generar el reporte.", true); return; }
-              dibujar(datos);
-            } catch (e) {
-              mensaje("No se pudo conectar con el servidor.", true);
-            }
-          }
-
-          function titulo(clave) {
-            const t = clave.replace(/_/g, " ");
-            return t.charAt(0).toUpperCase() + t.slice(1);
-          }
-
-          // textContent (no innerHTML): los datos de la bitácora no pueden inyectar HTML.
-          function dibujar(filas) {
-            if (!filas.length) { mensaje("Sin resultados para los filtros indicados.", false); return; }
-            const columnas = Object.keys(filas[0]);
-            const tr = document.createElement("tr");
-            columnas.forEach((c) => { const th = document.createElement("th"); th.textContent = titulo(c); tr.appendChild(th); });
-            $("thead").appendChild(tr);
-            const frag = document.createDocumentFragment();
-            filas.forEach((f) => {
-              const row = document.createElement("tr");
-              columnas.forEach((c) => { const td = document.createElement("td"); td.textContent = f[c] == null ? "" : f[c]; row.appendChild(td); });
-              frag.appendChild(row);
-            });
-            $("tbody").appendChild(frag);
-            mensaje(filas.length + " registro(s).", false);
-          }
-
-          async function salir() {
-            try { await fetch(BASE + "/api/auth/logout", { method: "POST" }); } catch (e) { /* se ignora */ }
-            window.location.href = BASE + "/login.html";
-          }
-
-          validarSesion().then((ok) => {
-            if (!ok) return;
-            construirMenu();
-            $("filtros").addEventListener("submit", generar);
-            $("btnSalir").addEventListener("click", salir);
-            seleccionar("clientes");
-          });
         })();
+
+        // Muestra el mensaje que devuelve el servidor ({"mensaje": ...}) en lugar de la traza completa.
+        async function leerError(res) {
+            const texto = await res.text();
+            try { const j = JSON.parse(texto); return j.mensaje || texto; } catch (e) { return texto; }
+        }
+
+
+        // VARIABLES DE PAGINACIÓN EN MEMORIA
+        let listaClientesCompleta = [];
+        let paginaActual = 1;
+        const registrosPorPagina = 5;
+
+        // CONTROL DE NAVEGACIÓN
+        function abrirModulo(modulo) {
+            document.querySelectorAll('.panel-contenedor').forEach(m => m.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(`modulo-${modulo}`).style.display = 'block';
+            document.getElementById(`btn-nav-${modulo}`).classList.add('active');
+
+            if (modulo === 'busqueda') {
+                obtenerTodosLosClientes();
+            }
+            if (modulo === 'catalogos') {
+                cargarImpuestos();
+                cargarProductos();
+            }
+            if (modulo === 'facturas') {
+                consultarFacturas();
+            }
+        }
+
+        // Consulta de Clientes
+        async function obtenerTodosLosClientes() {
+            const cuerpo = document.getElementById("cuerpoTablaClientes");
+            cuerpo.innerHTML = `<tr><td colspan="10" style="text-align: center;">Cargando lista de clientes...</td></tr>`;
+
+            try {
+                const res = await fetch(API_CLIENTES_URL);
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                
+                listaClientesCompleta = await res.json();
+                paginaActual = 1;
+                renderizarTablaClientesConPaginacion();
+            } catch (err) {
+                console.error("Error al obtener clientes:", err);
+                cuerpo.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--accent-terracotta);">No se pudieron cargar los registros. (${err.message})</td></tr>`;
+                actualizarEstadoPaginacion(0);
+            }
+        }
+
+        // Búsqueda por ID o por Nombre
+        async function ejecutarBusquedaCliente() {
+            const tipo = document.getElementById("tipo_busqueda").value;
+            const criterio = document.getElementById("buscar_criterio").value.trim();
+            const cuerpo = document.getElementById("cuerpoTablaClientes");
+
+            if (!criterio) {
+                obtenerTodosLosClientes();
+                return;
+            }
+
+            cuerpo.innerHTML = `<tr><td colspan="10" style="text-align: center;">Buscando...</td></tr>`;
+
+            try {
+                listaClientesCompleta = [];
+
+                if (tipo === "id") {
+                    const res = await fetch(`${API_CLIENTES_URL}/${encodeURIComponent(criterio)}`);
+                    
+                    if (res.status === 404) {
+                        cuerpo.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--accent-terracotta);">No existe el cliente con ID: ${criterio}</td></tr>`;
+                        actualizarEstadoPaginacion(0);
+                        return;
+                    }
+
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+                    const cliente = await res.json();
+                    if (cliente) listaClientesCompleta = [cliente];
+
+                } else {
+                    const res = await fetch(`${API_CLIENTES_URL}/buscar/nombre`, {
+                        method: "POST",
+                        headers: { "Content-Type": "text/plain; charset=UTF-8" },
+                        body: criterio
+                    });
+
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    listaClientesCompleta = await res.json();
+                }
+
+                paginaActual = 1;
+                renderizarTablaClientesConPaginacion();
+
+            } catch (err) {
+                console.error("Error al realizar la consulta:", err);
+                cuerpo.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--accent-terracotta);">Error al consultar el servidor. (${err.message})</td></tr>`;
+                actualizarEstadoPaginacion(0);
+            }
+        }
+
+        // FUNCIÓN DE RENDEREADO Y PAGINACIÓN
+        function renderizarTablaClientesConPaginacion() {
+            const cuerpo = document.getElementById("cuerpoTablaClientes");
+
+            if (!listaClientesCompleta || listaClientesCompleta.length === 0) {
+                cuerpo.innerHTML = `<tr><td colspan="10" style="text-align: center;">No hay clientes para mostrar.</td></tr>`;
+                actualizarEstadoPaginacion(0);
+                return;
+            }
+
+            const totalPaginas = Math.ceil(listaClientesCompleta.length / registrosPorPagina);
+            if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+            if (paginaActual < 1) paginaActual = 1;
+
+            const inicio = (paginaActual - 1) * registrosPorPagina;
+            const fin = inicio + registrosPorPagina;
+            const clientesPagina = listaClientesCompleta.slice(inicio, fin);
+
+            cuerpo.innerHTML = clientesPagina.map(c => `
+                <tr>
+                    <td>${c.codCliente != null ? c.codCliente : ''}</td>
+                    <td>${c.nomCliente != null ? c.nomCliente : ''}</td>
+                    <td>${c.tipIdentificacion != null ? c.tipIdentificacion : ''}</td>
+                    <td>${c.numIdentificacion != null ? c.numIdentificacion : ''}</td>
+                    <td>${c.numTelefono != null ? c.numTelefono : ''}</td>
+                    <td>${c.desCorreo != null ? c.desCorreo : ''}</td>
+                    <td>${c.desProvincia || ''}, ${c.desCanton || ''}</td>
+                    <td>${c.desActividadEconomica != null ? c.desActividadEconomica : ''}</td>
+                    <td>${c.indEstado === 'I' ? 'Inactivo' : 'Activo'}</td>
+                    <td>
+                        <button class="btn-accion" onclick="editarCliente(${c.codCliente})">Editar</button>
+                        ${rolActual === 'Rol_Admin' ? `<button class="btn-accion peligro" onclick="eliminarCliente(${c.codCliente})">Eliminar</button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+
+            actualizarEstadoPaginacion(totalPaginas);
+        }
+
+        function cambiarPagina(delta) {
+            paginaActual += delta;
+            renderizarTablaClientesConPaginacion();
+        }
+
+        function actualizarEstadoPaginacion(totalPaginas) {
+            const btnAnt = document.getElementById("btnPaginaAnt");
+            const btnSig = document.getElementById("btnPaginaSig");
+            const lbl = document.getElementById("lblPaginacion");
+
+            if (totalPaginas === 0) {
+                lbl.textContent = "Página 0 de 0";
+                btnAnt.disabled = true;
+                btnSig.disabled = true;
+            } else {
+                lbl.textContent = `Página ${paginaActual} de ${totalPaginas} (${listaClientesCompleta.length} registros)`;
+                btnAnt.disabled = (paginaActual === 1);
+                btnSig.disabled = (paginaActual === totalPaginas);
+            }
+        }
+
+        // Registro de Nuevo Cliente
+        document.getElementById("formCliente").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("msgCliente");
+            msg.style.color = "var(--accent-lavender)";
+            msg.textContent = "Procesando registro en la base de datos...";
+
+            const payload = {
+                nomCliente: document.getElementById("nomCliente").value,
+                tipIdentificacion: document.getElementById("tipIdentificacion").value,
+                numIdentificacion: document.getElementById("numIdentificacion").value,
+                numTelefono: document.getElementById("numTelefono").value,
+                desCorreo: document.getElementById("desCorreo").value,
+                desProvincia: document.getElementById("desProvincia").value,
+                desCanton: document.getElementById("desCanton").value,
+                desDistrito: document.getElementById("desDistrito").value,
+                desBarrio: document.getElementById("desBarrio").value,
+                desProfesion: document.getElementById("desProfesion").value,
+                desActividadEconomica: document.getElementById("desActividadEconomica").value
+            };
+
+            const codEdicion = document.getElementById("codClienteEdicion").value;
+            if (codEdicion) {
+                payload.indEstado = document.getElementById("indEstadoCliente").value;
+            }
+            try {
+                const res = await fetch(codEdicion ? `${API_CLIENTES_URL}/${codEdicion}` : API_CLIENTES_URL, {
+                    method: codEdicion ? "PUT" : "POST",
+                    headers: { "Content-Type": "application/json; charset=UTF-8" },
+                    body: JSON.stringify(payload)
+                });
+                if (res.status === 201 || res.ok) {
+                    const clienteGuardado = await res.json();
+                    msg.style.color = "var(--accent-sage)";
+                    msg.textContent = codEdicion
+                        ? `Cliente #${codEdicion} actualizado con éxito.`
+                        : `Cliente "${clienteGuardado.nomCliente || payload.nomCliente}" registrado e insertado con éxito.`;
+                    e.target.reset();
+                    cancelarEdicionCliente(false);
+                    
+                    setTimeout(() => {
+                        abrirModulo('busqueda');
+                    }, 1200);
+                } else {
+                    const errText = await leerError(res);
+                    msg.style.color = "var(--accent-terracotta)";
+                    msg.textContent = `Error (${res.status}): El servidor rechazó el registro. ${errText}`;
+                }
+            } catch (err) {
+                console.error("Error al guardar cliente:", err);
+                msg.style.color = "var(--accent-terracotta)";
+                msg.textContent = "Error de conexión al intentar guardar el cliente.";
+            }
+        });
+
+        // LÓGICA DE NOTAS
+        document.getElementById("formNota").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("msgNota");
+            msg.style.color = "var(--accent-lavender)";
+            msg.textContent = "Registrando nota en la base de datos...";
+
+            const payloadNota = {
+                numFactura: parseInt(document.getElementById("nota_factura_id").value),
+                indTipo: document.getElementById("nota_tipo").value,
+                desMotivo: document.getElementById("nota_motivo").value.trim()
+            };
+
+            try {
+                const res = await fetch(API_NOTAS_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json; charset=UTF-8" },
+                    body: JSON.stringify(payloadNota)
+                });
+
+                if (res.ok || res.status === 201) {
+                    const notaGuardada = await res.json();
+                    msg.style.color = "var(--accent-sage)";
+                    msg.textContent = `Nota de ${payloadNota.indTipo} #${notaGuardada.codNota || ''} aplicada a la Factura #${payloadNota.numFactura} con éxito.`;
+                    e.target.reset();
+                } else {
+                    const errText = await leerError(res);
+                    msg.style.color = "var(--accent-terracotta)";
+                    msg.textContent = `Error (${res.status}): No se pudo procesar la nota. ${errText}`;
+                }
+            } catch (err) {
+                console.error("Error al aplicar la nota:", err);
+                msg.style.color = "var(--accent-terracotta)";
+                msg.textContent = "Error de conexión al procesar la nota.";
+            }
+        });
+
+        function actualizarTipoCambio() {
+            const moneda = document.getElementById("fac_moneda").value;
+            const inputTC = document.getElementById("fac_tipo_cambio");
+            if (moneda === "USD") {
+                inputTC.value = "515.0000";
+            } else {
+                inputTC.value = "1.0000";
+            }
+        }
+
+        function calcularTotales() {
+            const cantidad = parseFloat(document.getElementById("fac_cantidad").value) || 0;
+            const subtotal = parseFloat(document.getElementById("fac_subtotal").value) || 0;
+            
+            const montoSubtotalCalculado = cantidad * subtotal;
+            const impuestos = montoSubtotalCalculado * 0.13;
+            const total = montoSubtotalCalculado + impuestos;
+
+            document.getElementById("lbl_impuestos").innerText = impuestos.toFixed(2);
+            document.getElementById("lbl_total").innerText = total.toFixed(2);
+        }
+
+        document.getElementById("formFactura").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("msgFactura");
+            msg.style.color = "var(--accent-lavender)";
+            msg.textContent = "Procesando emisión de la factura...";
+
+            const cantidad = parseFloat(document.getElementById("fac_cantidad").value) || 1;
+            const subtotalUnitario = parseFloat(document.getElementById("fac_subtotal").value) || 0;
+            
+            const subtotalTotal = parseFloat((cantidad * subtotalUnitario).toFixed(2));
+            const totalImpuestos = parseFloat((subtotalTotal * 0.13).toFixed(2));
+            const montoTotal = parseFloat((subtotalTotal + totalImpuestos).toFixed(2));
+
+            const payloadFactura = {
+                codCliente: parseInt(document.getElementById("fac_cliente_id").value),
+                condicionVenta: document.getElementById("fac_condicion").value,
+                medioPago: document.getElementById("fac_medio_pago").value,
+                moneda: document.getElementById("fac_moneda").value,
+                tipoCambio: parseFloat(document.getElementById("fac_tipo_cambio").value),
+                observaciones: document.getElementById("fac_observaciones").value.trim(),
+                subtotal: subtotalTotal,
+                totalImpuestos: totalImpuestos,
+                montoTotal: montoTotal,
+                detalles: [
+                    {
+                        codProducto: parseInt(document.getElementById("fac_cod_producto").value),
+                        cantidad: cantidad,
+                        montoLinea: subtotalTotal
+                    }
+                ]
+            };
+
+            try {
+                const res = await fetch(API_FACTURAS_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json; charset=UTF-8" },
+                    body: JSON.stringify(payloadFactura)
+                });
+
+                if (res.ok || res.status === 201) {
+                    const facturaRegistrada = await res.json();
+                    msg.style.color = "var(--accent-sage)";
+                    msg.textContent = `Factura #${facturaRegistrada.numFactura || 'generada'} registrada con éxito en SQL Server.`;
+                    e.target.reset();
+                    actualizarTipoCambio();
+                    calcularTotales();
+                } else {
+                    const errText = await leerError(res);
+                    msg.style.color = "var(--accent-terracotta)";
+                    msg.textContent = `Error (${res.status}): No se pudo registrar la factura. ${errText}`;
+                }
+            } catch (err) {
+                console.error("Error al emitir factura:", err);
+                msg.style.color = "var(--accent-terracotta)";
+                msg.textContent = "Error de conexión al procesar la factura.";
+            }
+        });
+
+
+        // ---------- EDICIÓN Y ELIMINACIÓN DE CLIENTES ----------
+        async function editarCliente(cod) {
+            const res = await fetch(`${API_CLIENTES_URL}/${cod}`);
+            if (!res.ok) { alertaTabla(`No se pudo cargar el cliente #${cod}: ${await leerError(res)}`); return; }
+            const c = await res.json();
+            abrirModulo('cliente');
+            document.getElementById("codClienteEdicion").value = c.codCliente;
+            document.getElementById("tituloFormCliente").textContent = `Modificar Cliente #${c.codCliente}`;
+            document.getElementById("btnGuardarCliente").textContent = "Guardar cambios";
+            document.getElementById("btnCancelarEdicion").style.display = "block";
+            document.getElementById("campoEstadoCliente").style.display = "flex";
+            const campos = ["nomCliente", "tipIdentificacion", "numIdentificacion", "numTelefono", "desCorreo",
+                            "desProfesion", "desActividadEconomica", "desProvincia", "desCanton", "desDistrito", "desBarrio"];
+            campos.forEach(id => { document.getElementById(id).value = c[id] != null ? c[id] : ""; });
+            document.getElementById("indEstadoCliente").value = c.indEstado || "A";
+            document.getElementById("msgCliente").textContent = "";
+        }
+
+        function cancelarEdicionCliente(limpiar = true) {
+            document.getElementById("codClienteEdicion").value = "";
+            document.getElementById("tituloFormCliente").textContent = "Registrar Nuevo Cliente";
+            document.getElementById("btnGuardarCliente").textContent = "Guardar Cliente";
+            document.getElementById("btnCancelarEdicion").style.display = "none";
+            document.getElementById("campoEstadoCliente").style.display = "none";
+            if (limpiar) document.getElementById("formCliente").reset();
+        }
+
+        async function eliminarCliente(cod) {
+            if (!confirm(`¿Eliminar el cliente #${cod}? Si tiene facturas, el sistema no lo permitirá y deberá inactivarlo.`)) return;
+            const res = await fetch(`${API_CLIENTES_URL}/${cod}`, { method: "DELETE" });
+            if (res.ok) { obtenerTodosLosClientes(); }
+            else { alertaTabla(`No se eliminó el cliente #${cod}: ${await leerError(res)}`); }
+        }
+
+        function alertaTabla(texto) {
+            const cuerpo = document.getElementById("cuerpoTablaClientes");
+            cuerpo.insertAdjacentHTML("afterbegin", `<tr><td colspan="10" style="text-align:center; color: var(--accent-terracotta);">${texto}</td></tr>`);
+        }
+
+        // ---------- CONSULTA DE FACTURAS ----------
+        async function consultarFacturas() {
+            const cuerpo = document.getElementById("cuerpoTablaFacturas");
+            const num = document.getElementById("buscar_factura").value.trim();
+            cuerpo.innerHTML = `<tr><td colspan="9" style="text-align:center;">Consultando...</td></tr>`;
+            try {
+                let lista;
+                if (num) {
+                    const r = await fetch(`${API_FACTURAS_URL}/${encodeURIComponent(num)}`);
+                    if (r.status === 404) { cuerpo.innerHTML = `<tr><td colspan="9" style="text-align:center;">No existe la factura ${num}.</td></tr>`; return; }
+                    if (!r.ok) throw new Error(await leerError(r));
+                    lista = [await r.json()];
+                } else {
+                    const r = await fetch(`${API_FACTURAS_URL}?limite=50`);
+                    if (!r.ok) throw new Error(await leerError(r));
+                    lista = await r.json();
+                }
+                cuerpo.innerHTML = lista.map(f => `
+                    <tr>
+                        <td>${f.numFactura}</td>
+                        <td>${f.fecFactura ? String(f.fecFactura).replace('T', ' ').substring(0, 16) : ''}</td>
+                        <td>${f.codCliente ?? ''} · ${f.nomCliente ?? ''}</td>
+                        <td>${f.condicionVenta ?? ''}</td>
+                        <td>${f.medioPago ?? ''}</td>
+                        <td>${f.moneda ?? ''}</td>
+                        <td>${f.subtotal ?? ''}</td>
+                        <td>${f.totalImpuestos ?? ''}</td>
+                        <td>${f.montoTotal ?? ''}</td>
+                    </tr>`).join('') || `<tr><td colspan="9" style="text-align:center;">Sin facturas.</td></tr>`;
+            } catch (err) {
+                cuerpo.innerHTML = `<tr><td colspan="9" style="text-align:center; color: var(--accent-terracotta);">${err.message}</td></tr>`;
+            }
+        }
+
+        // ---------- PRODUCTOS / SERVICIOS (ADMIN) ----------
+        async function cargarProductos() {
+            const cuerpo = document.getElementById("cuerpoTablaProductos");
+            const r = await fetch(API_PRODUCTOS_URL);
+            if (!r.ok) { cuerpo.innerHTML = `<tr><td colspan="8">${await leerError(r)}</td></tr>`; return; }
+            const lista = await r.json();
+            cuerpo.innerHTML = lista.map(p => `
+                <tr>
+                    <td>${p.codProducto}</td><td>${p.codCabys}</td><td>${p.desProducto}</td><td>${p.unidadMedida}</td>
+                    <td>${p.precio}</td><td>${p.codTipoImpuesto ?? ''}</td><td>${p.indEstado === 'I' ? 'Inactivo' : 'Activo'}</td>
+                    <td>
+                        <button class="btn-accion" onclick="editarProducto(${p.codProducto})">Editar</button>
+                        <button class="btn-accion peligro" onclick="inactivarProducto(${p.codProducto})">Inactivar</button>
+                    </td>
+                </tr>`).join('');
+            window.__productos = lista;
+        }
+
+        function editarProducto(id) {
+            const p = (window.__productos || []).find(x => x.codProducto === id);
+            if (!p) return;
+            document.getElementById("prod_id").value = p.codProducto;
+            document.getElementById("prod_cabys").value = p.codCabys;
+            document.getElementById("prod_desc").value = p.desProducto;
+            document.getElementById("prod_unidad").value = p.unidadMedida;
+            document.getElementById("prod_precio").value = p.precio;
+            document.getElementById("prod_impuesto").value = p.codTipoImpuesto;
+            document.getElementById("prod_estado").value = p.indEstado || "A";
+            document.getElementById("btnGuardarProducto").textContent = `Guardar cambios del producto #${p.codProducto}`;
+        }
+
+        function limpiarProducto() {
+            document.getElementById("formProducto").reset();
+            document.getElementById("prod_id").value = "";
+            document.getElementById("btnGuardarProducto").textContent = "Guardar producto";
+        }
+
+        document.getElementById("formProducto").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("msgProducto");
+            const id = document.getElementById("prod_id").value;
+            const payload = {
+                codCabys: document.getElementById("prod_cabys").value,
+                desProducto: document.getElementById("prod_desc").value,
+                unidadMedida: document.getElementById("prod_unidad").value,
+                precio: parseFloat(document.getElementById("prod_precio").value),
+                codTipoImpuesto: document.getElementById("prod_impuesto").value,
+                indEstado: document.getElementById("prod_estado").value
+            };
+            const r = await fetch(id ? `${API_PRODUCTOS_URL}/${id}` : API_PRODUCTOS_URL, {
+                method: id ? "PUT" : "POST",
+                headers: { "Content-Type": "application/json; charset=UTF-8" },
+                body: JSON.stringify(payload)
+            });
+            msg.style.color = r.ok ? "var(--accent-sage)" : "var(--accent-terracotta)";
+            msg.textContent = r.ok ? "Producto guardado." : `Error (${r.status}): ${await leerError(r)}`;
+            if (r.ok) { limpiarProducto(); cargarProductos(); }
+        });
+
+        async function inactivarProducto(id) {
+            if (!confirm(`¿Inactivar el producto #${id}?`)) return;
+            const r = await fetch(`${API_PRODUCTOS_URL}/${id}`, { method: "DELETE" });
+            const msg = document.getElementById("msgProducto");
+            msg.style.color = r.ok ? "var(--accent-sage)" : "var(--accent-terracotta)";
+            msg.textContent = r.ok ? `Producto #${id} inactivado.` : `Error (${r.status}): ${await leerError(r)}`;
+            cargarProductos();
+        }
+
+        // ---------- TIPOS DE IMPUESTO (ADMIN) ----------
+        async function cargarImpuestos() {
+            const r = await fetch(API_IMPUESTOS_URL);
+            const cuerpo = document.getElementById("cuerpoTablaImpuestos");
+            if (!r.ok) { cuerpo.innerHTML = `<tr><td colspan="6">${await leerError(r)}</td></tr>`; return; }
+            const lista = await r.json();
+            window.__impuestos = lista;
+            document.getElementById("prod_impuesto").innerHTML = lista
+                .map(t => `<option value="${t.codTipoImpuesto}">${t.codTipoImpuesto} · ${t.desTipoImpuesto}</option>`).join('');
+            cuerpo.innerHTML = lista.map(t => `
+                <tr>
+                    <td>${t.codTipoImpuesto}</td><td>${t.desTipoImpuesto}</td><td>${t.porcentaje}</td><td>${t.tarifa}</td>
+                    <td>${t.indEstado === 'I' ? 'Inactivo' : 'Activo'}</td>
+                    <td>
+                        <button class="btn-accion" onclick="editarImpuesto('${t.codTipoImpuesto}')">Editar</button>
+                        <button class="btn-accion peligro" onclick="inactivarImpuesto('${t.codTipoImpuesto}')">Inactivar</button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        function editarImpuesto(cod) {
+            const t = (window.__impuestos || []).find(x => x.codTipoImpuesto === cod);
+            if (!t) return;
+            document.getElementById("imp_modo").value = "editar";
+            document.getElementById("imp_cod").value = t.codTipoImpuesto;
+            document.getElementById("imp_cod").readOnly = true;
+            document.getElementById("imp_desc").value = t.desTipoImpuesto;
+            document.getElementById("imp_porcentaje").value = t.porcentaje;
+            document.getElementById("imp_tarifa").value = t.tarifa;
+            document.getElementById("imp_estado").value = t.indEstado || "A";
+        }
+
+        function limpiarImpuesto() {
+            document.getElementById("formImpuesto").reset();
+            document.getElementById("imp_modo").value = "nuevo";
+            document.getElementById("imp_cod").readOnly = false;
+        }
+
+        document.getElementById("formImpuesto").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = document.getElementById("msgImpuesto");
+            const editar = document.getElementById("imp_modo").value === "editar";
+            const cod = document.getElementById("imp_cod").value.trim();
+            const payload = {
+                codTipoImpuesto: cod,
+                desTipoImpuesto: document.getElementById("imp_desc").value,
+                porcentaje: parseFloat(document.getElementById("imp_porcentaje").value),
+                tarifa: parseFloat(document.getElementById("imp_tarifa").value),
+                indEstado: document.getElementById("imp_estado").value
+            };
+            const r = await fetch(editar ? `${API_IMPUESTOS_URL}/${encodeURIComponent(cod)}` : API_IMPUESTOS_URL, {
+                method: editar ? "PUT" : "POST",
+                headers: { "Content-Type": "application/json; charset=UTF-8" },
+                body: JSON.stringify(payload)
+            });
+            msg.style.color = r.ok ? "var(--accent-sage)" : "var(--accent-terracotta)";
+            msg.textContent = r.ok ? "Tipo de impuesto guardado." : `Error (${r.status}): ${await leerError(r)}`;
+            if (r.ok) { limpiarImpuesto(); cargarImpuestos(); }
+        });
+
+        async function inactivarImpuesto(cod) {
+            if (!confirm(`¿Inactivar el tipo de impuesto ${cod}?`)) return;
+            const r = await fetch(`${API_IMPUESTOS_URL}/${encodeURIComponent(cod)}`, { method: "DELETE" });
+            const msg = document.getElementById("msgImpuesto");
+            msg.style.color = r.ok ? "var(--accent-sage)" : "var(--accent-terracotta)";
+            msg.textContent = r.ok ? `Tipo ${cod} inactivado.` : `Error (${r.status}): ${await leerError(r)}`;
+            cargarImpuestos();
+        }
+
     </script>
 </body>
 </html>

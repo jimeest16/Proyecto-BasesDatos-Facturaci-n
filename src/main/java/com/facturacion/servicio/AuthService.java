@@ -9,18 +9,15 @@ import java.sql.SQLException;
 import java.sql.CallableStatement;
 import java.sql.Types;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class AuthService {
 
     public record ResultadoInicioSesion(String rol, Integer codSesion) {}
 
-    private final String url =
-        "jdbc:sqlserver://127.0.0.1:1433;"
-        + "databaseName=SistemaFacturacionEmpresaPropi;"
-        + "encrypt=true;"
-        + "trustServerCertificate=true;"
-        + "loginTimeout=5";
+    @Value("${spring.datasource.url}")
+    private String url;
 
     public ResultadoInicioSesion iniciarSesion(String usuario, String contrasena,
                                                String terminal, String ip) {
